@@ -12,6 +12,8 @@ import { hasValue } from '../empty.util';
 import { AuthService } from '../../core/auth/auth.service';
 import { CoreState } from '../../core/core-state.model';
 import { rendersAuthMethodType } from './methods/log-in.methods-decorator';
+import { AuthMethodType } from 'src/app/core/auth/models/auth.method-type';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ds-log-in',
@@ -47,6 +49,7 @@ export class LogInComponent implements OnInit {
 
   constructor(private store: Store<CoreState>,
               private authService: AuthService,
+              private route: ActivatedRoute,
   ) {
   }
 
@@ -54,7 +57,7 @@ export class LogInComponent implements OnInit {
     this.authMethods = this.store.pipe(
       select(getAuthenticationMethods),
       map((methods: AuthMethod[]) => methods
-        .filter((authMethod: AuthMethod) => rendersAuthMethodType(authMethod.authMethodType) !== undefined)
+        .filter((authMethod: AuthMethod) => (authMethod.authMethodType !== AuthMethodType.Password || this.route.snapshot.queryParamMap.get('showAdminLogin') === 'true') && rendersAuthMethodType(authMethod.authMethodType) !== undefined)
         .sort((method1: AuthMethod, method2: AuthMethod) => method1.position - method2.position)
       ),
     );
