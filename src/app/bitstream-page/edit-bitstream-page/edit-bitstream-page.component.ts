@@ -158,6 +158,14 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     name: 'selectedFormat'
   });
 
+    /**
+   * The Dynamic Input Model for license
+   */
+    licenseModel = new DynamicSelectModel({
+      id: 'license',
+      name: 'license'
+    });
+  
   /**
    * The Dynamic Input Model for supplying more format information
    */
@@ -245,7 +253,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   /**
    * All input models in a simple array for easier iterations
    */
-  inputModels = [this.fileNameModel, this.primaryBitstreamModel, this.descriptionModel, this.selectedFormatModel,
+  inputModels = [this.fileNameModel, this.primaryBitstreamModel, this.descriptionModel, this.licenseModel, this.selectedFormatModel,
     this.newFormatModel];
 
   /**
@@ -268,6 +276,12 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       id: 'descriptionContainer',
       group: [
         this.descriptionModel
+      ]
+    }),
+    new DynamicFormGroupModel({
+      id: 'formatContainer',
+      group: [
+        this.licenseModel
       ]
     }),
     new DynamicFormGroupModel({
@@ -299,6 +313,11 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       }
     },
     description: {
+      grid: {
+        host: 'col-12 d-inline-block'
+      }
+    },
+    license: {
       grid: {
         host: 'col-12 d-inline-block'
       }
