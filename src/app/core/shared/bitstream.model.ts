@@ -7,8 +7,8 @@ import { BITSTREAM_FORMAT } from './bitstream-format.resource-type';
 import { BITSTREAM } from './bitstream.resource-type';
 import { DSpaceObject } from './dspace-object.model';
 import { HALLink } from './hal-link.model';
-import {BUNDLE} from './bundle.resource-type';
-import {Bundle} from './bundle.model';
+import { BUNDLE } from './bundle.resource-type';
+import { Bundle } from './bundle.model';
 import { ChildHALResource } from './child-hal-resource.model';
 
 @typedObject
@@ -28,18 +28,17 @@ export class Bitstream extends DSpaceObject implements ChildHALResource {
   @autoserialize
   description: string;
 
+  /**
+   * The internal notes of this Bitstream
+   */
+  @autoserialize
+  notes: string;
 
-    /**
-   * The description of this Bitstream
-   */
-    @autoserialize
-    notes: string;
-  
-    /**
-   * The description of this Bitstream
-   */
-    @autoserialize
-    comments: string;
+  /**
+ * The comments of this Bitstream
+ */
+  @autoserialize
+  comments: string;
 
   /**
    * The name of the Bundle this Bitstream is part of
