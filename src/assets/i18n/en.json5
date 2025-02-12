@@ -686,6 +686,18 @@
 
   "bitstream.edit.form.description.label": "Description",
 
+  "bitstream.edit.form.license.hint": "Enter the license the file.",
+
+  "bitstream.edit.form.license.label": "License",
+
+  "bitstream.edit.form.notes.hint": "Enter internal notes to the file.",
+
+  "bitstream.edit.form.notes.label": "Internal notes",
+
+  "bitstream.edit.form.comments.hint": "Enter comments/feedback to the file.",
+
+  "bitstream.edit.form.comments.label": "Comments/Feedback",
+
   "bitstream.edit.form.embargo.hint": "The first day from which access is allowed. <b>This date cannot be modified on this form.</b> To set an embargo date for a bitstream, go to the <i>Item Status</i> tab, click <i>Authorizations...</i>, create or edit the bitstream's <i>READ</i> policy, and set the <i>Start Date</i> as desired.",
 
   "bitstream.edit.form.embargo.label": "Embargo until specific date",

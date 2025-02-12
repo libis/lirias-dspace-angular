@@ -28,6 +28,19 @@ export class Bitstream extends DSpaceObject implements ChildHALResource {
   @autoserialize
   description: string;
 
+
+    /**
+   * The description of this Bitstream
+   */
+    @autoserialize
+    notes: string;
+  
+    /**
+   * The description of this Bitstream
+   */
+    @autoserialize
+    comments: string;
+
   /**
    * The name of the Bundle this Bitstream is part of
    */

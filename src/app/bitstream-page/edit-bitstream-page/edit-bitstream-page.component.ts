@@ -167,6 +167,27 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     });
   
   /**
+   * The Dynamic TextArea Model for the file's internal notes
+   */
+    notesModel = new DsDynamicTextAreaModel({
+      hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
+      id: 'notes',
+      name: 'notes',
+      rows: 10
+    });
+  
+  /**
+   * The Dynamic TextArea Model for comments for the file
+   */
+    commentsModel = new DsDynamicTextAreaModel({
+      hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
+      id: 'comments',
+      name: 'comments',
+      rows: 10
+    });
+  
+
+  /**
    * The Dynamic Input Model for supplying more format information
    */
   newFormatModel = new DynamicInputModel({
@@ -253,7 +274,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   /**
    * All input models in a simple array for easier iterations
    */
-  inputModels = [this.fileNameModel, this.primaryBitstreamModel, this.descriptionModel, this.licenseModel, this.selectedFormatModel,
+  inputModels = [this.fileNameModel, this.primaryBitstreamModel, this.descriptionModel, this.licenseModel, this.notesModel, this.commentsModel, this.selectedFormatModel,
     this.newFormatModel];
 
   /**
@@ -279,11 +300,24 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       ]
     }),
     new DynamicFormGroupModel({
-      id: 'formatContainer',
+      id: 'licenseContainer',
       group: [
         this.licenseModel
       ]
     }),
+    new DynamicFormGroupModel({
+      id: 'notesContainer',
+      group: [
+        this.notesModel
+      ]
+    }),
+    new DynamicFormGroupModel({
+      id: 'commentsContainer',
+      group: [
+        this.commentsModel
+      ]
+    }),
+
     new DynamicFormGroupModel({
       id: 'formatContainer',
       group: [
@@ -318,6 +352,16 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       }
     },
     license: {
+      grid: {
+        host: 'col-12 d-inline-block'
+      }
+    },
+    notes: {
+      grid: {
+        host: 'col-12 d-inline-block'
+      }
+    },
+    comments: {
       grid: {
         host: 'col-12 d-inline-block'
       }
@@ -492,6 +536,12 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       },
       descriptionContainer: {
         description: bitstream.firstMetadataValue('dc.description')
+      },
+      notesContainer: {
+        notes: bitstream.firstMetadataValue('dc.bitstream.internalnotes')
+      },
+      commentsContainer: {
+        comments: bitstream.firstMetadataValue('dc.bitstream.comments')
       },
       formatContainer: {
         newFormat: hasValue(bitstream.firstMetadata('dc.format')) ? bitstream.firstMetadata('dc.format').value : undefined
@@ -699,6 +749,18 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     } else {
       Metadata.setFirstValue(newMetadata, 'dc.description', rawForm.descriptionContainer.description);
     }
+    if (isEmpty(rawForm.notesContainer.notes)) {
+      delete newMetadata['dc.bitstream.internalnotes'];
+    } else {
+      Metadata.setFirstValue(newMetadata, 'dc.bitstream.internalnotes', rawForm.notesContainer.notes);
+    }
+    
+    if (isEmpty(rawForm.commentsContainer.comments)) {
+      delete newMetadata['dc.bitstream.comments'];
+    } else {
+      Metadata.setFirstValue(newMetadata, 'dc.bitstream.comments', rawForm.commentsContainer.comments);
+    }
+
     if (this.isIIIF) {
       // It's helpful to remove these metadata elements entirely when the form value is empty.
       // This avoids potential issues on the REST side and makes it possible to do things like
