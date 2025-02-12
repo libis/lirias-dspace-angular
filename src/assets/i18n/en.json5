@@ -686,7 +686,7 @@
 
   "bitstream.edit.form.description.label": "Description",
 
-  "bitstream.edit.form.license.hint": "Enter the license the file.",
+  "bitstream.edit.form.license.hint": "Enter the license of the file.",
 
   "bitstream.edit.form.license.label": "License",
 
