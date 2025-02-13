@@ -70,6 +70,21 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
    */
   formats: BitstreamFormat[];
 
+
+  /**
+   * A list of available cc-licenses
+   */
+  ccLicenses: string[] = [
+    "All rights reserved",
+    "https://creativecommons.org/licenses/by/4.0/",
+    "https://creativecommons.org/licenses/by-nc/4.0/",
+    "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "https://creativecommons.org/licenses/by-nd/4.0/",
+    "https://creativecommons.org/licenses/by-sa/4.0/"
+  ];
+
+
   /**
    * @type {string} Key prefix used to generate form messages
    */
@@ -158,7 +173,15 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     name: 'selectedFormat'
   });
 
-    /**
+  /**
+   * The Dynamic Input Model for supplying more format information
+   */
+  newFormatModel = new DynamicInputModel({
+    id: 'newFormat',
+    name: 'newFormat'
+  });
+
+  /**
    * The Dynamic Input Model for license
    */
     licenseModel = new DynamicSelectModel({
@@ -186,15 +209,6 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       rows: 10
     });
   
-
-  /**
-   * The Dynamic Input Model for supplying more format information
-   */
-  newFormatModel = new DynamicInputModel({
-    id: 'newFormat',
-    name: 'newFormat'
-  });
-
   /**
    * The Dynamic Input Model for the iiif label
    */
@@ -520,6 +534,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   setForm() {
     this.formGroup = this.formService.createFormGroup(this.formModel);
     this.updateFormatModel();
+    this.updateLicenseModel();
     this.updateForm(this.bitstream);
     this.updateFieldTranslations();
   }
@@ -539,6 +554,9 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       },
       notesContainer: {
         notes: bitstream.firstMetadataValue('dc.bitstream.internalnotes')
+      },
+      licenseContainer: {
+        license: hasValue(bitstream.firstMetadataValue('dc.rights.license')) ? bitstream.firstMetadataValue('dc.rights.license') : undefined
       },
       commentsContainer: {
         comments: bitstream.firstMetadataValue('dc.bitstream.comments')
@@ -607,6 +625,15 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     const format = this.formats.find((f: BitstreamFormat) => f.id === id);
     return hasValue(format) && format.supportLevel === BitstreamFormatSupportLevel.Unknown;
   }
+
+  updateLicenseModel() {
+    this.licenseModel.options = this.ccLicenses.map((license: string) =>
+      Object.assign({
+        value: license,
+        label: license
+      }))
+  }
+
 
   /**
    * Used to update translations of labels and hints on init and on language change
@@ -754,11 +781,15 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     } else {
       Metadata.setFirstValue(newMetadata, 'dc.bitstream.internalnotes', rawForm.notesContainer.notes);
     }
-    
     if (isEmpty(rawForm.commentsContainer.comments)) {
       delete newMetadata['dc.bitstream.comments'];
     } else {
       Metadata.setFirstValue(newMetadata, 'dc.bitstream.comments', rawForm.commentsContainer.comments);
+    }
+    if (isEmpty(rawForm.commentsContainer.comments)) {
+      delete newMetadata['dc.rights.license'];
+    } else {
+      Metadata.setFirstValue(newMetadata, 'dc.rights.license', rawForm.licenseContainer.license);
     }
 
     if (this.isIIIF) {
