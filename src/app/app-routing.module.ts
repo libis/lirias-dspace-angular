@@ -64,97 +64,97 @@ import { ThemedPageErrorComponent } from './page-error/themed-page-error.compone
             loadChildren: () => import('./home-page/home-page.module')
               .then((m) => m.HomePageModule),
             data: { showBreadcrumbs: false },
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'community-list',
             loadChildren: () => import('./community-list-page/community-list-page.module')
               .then((m) => m.CommunityListPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'id',
             loadChildren: () => import('./lookup-by-id/lookup-by-id.module')
               .then((m) => m.LookupIdModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'handle',
             loadChildren: () => import('./lookup-by-id/lookup-by-id.module')
               .then((m) => m.LookupIdModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: REGISTER_PATH,
             loadChildren: () => import('./register-page/register-page.module')
               .then((m) => m.RegisterPageModule),
-            canActivate: [SiteRegisterGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: FORGOT_PASSWORD_PATH,
             loadChildren: () => import('./forgot-password/forgot-password.module')
               .then((m) => m.ForgotPasswordModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: COMMUNITY_MODULE_PATH,
             loadChildren: () => import('./community-page/community-page.module')
               .then((m) => m.CommunityPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: COLLECTION_MODULE_PATH,
             loadChildren: () => import('./collection-page/collection-page.module')
               .then((m) => m.CollectionPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: ITEM_MODULE_PATH,
             loadChildren: () => import('./item-page/item-page.module')
               .then((m) => m.ItemPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'entities/:entity-type',
             loadChildren: () => import('./item-page/item-page.module')
               .then((m) => m.ItemPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: LEGACY_BITSTREAM_MODULE_PATH,
             loadChildren: () => import('./bitstream-page/bitstream-page.module')
-              .then((m) => m.BitstreamPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+              .then((m) => m.BitstreamPageModule)/*,
+            canActivate: [SiteAdministratorGuard]*/
           },
           {
             path: BITSTREAM_MODULE_PATH,
             loadChildren: () => import('./bitstream-page/bitstream-page.module')
-              .then((m) => m.BitstreamPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+              .then((m) => m.BitstreamPageModule)/*,
+            canActivate: [SiteAdministratorGuard]*/
           },
           {
             path: 'mydspace',
             loadChildren: () => import('./my-dspace-page/my-dspace-page.module')
               .then((m) => m.MyDSpacePageModule),
-            canActivate: [AuthenticatedGuard, EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'search',
             loadChildren: () => import('./search-page/search-page-routing.module')
               .then((m) => m.SearchPageRoutingModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'browse',
             loadChildren: () => import('./browse-by/browse-by-page.module')
               .then((m) => m.BrowseByPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: ADMIN_MODULE_PATH,
             loadChildren: () => import('./admin/admin.module')
               .then((m) => m.AdminModule),
-            canActivate: [SiteAdministratorGuard, EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'login',
@@ -170,46 +170,47 @@ import { ThemedPageErrorComponent } from './page-error/themed-page-error.compone
             path: 'submit',
             loadChildren: () => import('./submit-page/submit-page.module')
               .then((m) => m.SubmitPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'import-external',
             loadChildren: () => import('./import-external-page/import-external-page.module')
               .then((m) => m.ImportExternalPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: 'workspaceitems',
             loadChildren: () => import('./workspaceitems-edit-page/workspaceitems-edit-page.module')
               .then((m) => m.WorkspaceitemsEditPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: WORKFLOW_ITEM_MODULE_PATH,
             loadChildren: () => import('./workflowitems-edit-page/workflowitems-edit-page.module')
               .then((m) => m.WorkflowItemsEditPageModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: PROFILE_MODULE_PATH,
             loadChildren: () => import('./profile-page/profile-page.module')
               .then((m) => m.ProfilePageModule),
-            canActivate: [AuthenticatedGuard, EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: PROCESS_MODULE_PATH,
             loadChildren: () => import('./process-page/process-page.module')
               .then((m) => m.ProcessPageModule),
-            canActivate: [AuthenticatedGuard, EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: INFO_MODULE_PATH,
-            loadChildren: () => import('./info/info.module').then((m) => m.InfoModule)
+            loadChildren: () => import('./info/info.module').then((m) => m.InfoModule),
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: REQUEST_COPY_MODULE_PATH,
             loadChildren: () => import('./request-copy/request-copy.module').then((m) => m.RequestCopyModule),
-            canActivate: [EndUserAgreementCurrentUserGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           {
             path: FORBIDDEN_PATH,
@@ -219,23 +220,24 @@ import { ThemedPageErrorComponent } from './page-error/themed-page-error.compone
             path: 'statistics',
             loadChildren: () => import('./statistics-page/statistics-page-routing.module')
               .then((m) => m.StatisticsPageRoutingModule),
-            canActivate: [EndUserAgreementCurrentUserGuard],
+            canActivate: [SiteAdministratorGuard],
           },
           {
             path: HEALTH_PAGE_PATH,
             loadChildren: () => import('./health-page/health-page.module')
-              .then((m) => m.HealthPageModule)
+              .then((m) => m.HealthPageModule),
+              canActivate: [SiteAdministratorGuard]
           },
           {
             path: ACCESS_CONTROL_MODULE_PATH,
             loadChildren: () => import('./access-control/access-control.module').then((m) => m.AccessControlModule),
-            canActivate: [GroupAdministratorGuard, EndUserAgreementCurrentUserGuard],
+            canActivate: [SiteAdministratorGuard],
           },
           {
             path: 'subscriptions',
             loadChildren: () => import('./subscriptions-page/subscriptions-page-routing.module')
               .then((m) => m.SubscriptionsPageRoutingModule),
-            canActivate: [AuthenticatedGuard]
+            canActivate: [SiteAdministratorGuard]
           },
           { path: '**', pathMatch: 'full', component: ThemedPageNotFoundComponent },
         ]

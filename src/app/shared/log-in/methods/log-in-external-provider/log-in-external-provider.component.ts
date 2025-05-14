@@ -15,6 +15,7 @@ import { URLCombiner } from '../../../../core/url-combiner/url-combiner';
 import { CoreState } from '../../../../core/core-state.model';
 import { renderAuthMethodFor } from '../log-in.methods-decorator';
 import { AuthMethodType } from '../../../../core/auth/models/auth.method-type';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ds-log-in-external-provider',
@@ -65,7 +66,8 @@ export class LogInExternalProviderComponent implements OnInit {
     @Inject(NativeWindowService) protected _window: NativeWindowRef,
     private authService: AuthService,
     private hardRedirectService: HardRedirectService,
-    private store: Store<CoreState>
+    private store: Store<CoreState>,
+    private route: ActivatedRoute
   ) {
     this.authMethod = injectedAuthMethodModel;
   }
@@ -80,7 +82,17 @@ export class LogInExternalProviderComponent implements OnInit {
     // set location
     this.location = decodeURIComponent(this.injectedAuthMethodModel.location);
 
+    if (this.route.snapshot.queryParamMap.get('showAdminLogin') != 'true') {
+        console.log("Redirecting to Shibboleth");
+        this.redirectToExternalProvider();
+          }
+    else {
+        console.log("Showing login page");
+    }
+
   }
+
+  
 
   /**
    * Redirect to the external provider url for login
