@@ -4,7 +4,7 @@ import { Permission } from '../../core/shared/permission.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { combineLatest, combineLatest as observableCombineLatest, Observable, of as observableOf, Subscription, of } from 'rxjs';
-import { DynamicDatePickerModel, DynamicFormControlModel, DynamicFormGroupModel, DynamicFormLayout, DynamicFormService, DynamicInputModel, DynamicSelectModel } from '@ng-dynamic-forms/core';
+import { DynamicDateControlValue, DynamicDatePickerModel, DynamicFormControlModel, DynamicFormGroupModel, DynamicFormLayout, DynamicFormService, DynamicInputModel, DynamicSelectModel } from '@ng-dynamic-forms/core';
 import { NonNullableFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { DynamicCustomSwitchModel } from '../../shared/form/builder/ds-dynamic-form-ui/models/custom-switch/custom-switch.model';
@@ -29,6 +29,13 @@ import { DsDynamicTextAreaModel } from '../../shared/form/builder/ds-dynamic-for
 import { PrimaryBitstreamService } from '../../core/data/primary-bitstream.service';
 import { HttpClient } from '@angular/common/http';
 import { HALEndpointService } from 'src/app/core/shared/hal-endpoint.service';
+
+interface ValueFromDatePicker {
+  year: number | null;
+  month: number | null;
+  day: number | null;
+}
+
 
 @Component({
   selector: 'ds-edit-bitstream-page',
@@ -434,7 +441,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
     embargoEndDate: {
       grid: {
-        host: this.embargoEndDateBaseLayout + ' invisible'
+        host: this.embargoEndDateBaseLayout
       }
     },
 
@@ -590,7 +597,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
             {
               permissionContainer: {
                 permission: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.permission : null,
-                embargoEndDate: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.endDate : null
+                embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getToday()
               }
             });
         }
@@ -613,6 +620,14 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     return this.http.post<Permission>(this.halService.getRootHref() + "/kul/permissions/" + bitstreamID, permission);
   }
 
+  getToday() {
+    const date = new Date();
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate()
+    }
+  }
   /**
    * Initializes the form.
    */
@@ -650,7 +665,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
       permissionContainer: {
         permission: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.permission : null,
-        embargoEndDate: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.endDate : null
+        embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getToday()
       },
 
       formatContainer: {
@@ -861,15 +876,30 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     }
     let newPermission: Permission = {
       permission: this.permissionModel.value as string,
-      endDate: null
+      embargoEndDate: null
     }
-    // if (newPermission.permission=="EMBARGO" && this.embargoEndDateModel.value!=null) {
-    //   newPermission.endDate.year = this.embargoEndDateModel.value as Date
-    // }
+    if (newPermission.permission == "EMBARGO") {
+
+
+
+      const value = this.embargoEndDateModel.value as ValueFromDatePicker;
+
+
+      newPermission.embargoEndDate = {
+        year: value.year,
+        month: value.month,
+        day: value.day
+      };
+      console.log(newPermission);
+
+    }
     if (newPermission !== this.bitstreamPermission) {
       this.subs.push(
         this.postBitstreamPermission(this.bitstream.id, newPermission).subscribe(
-          (result) => console.log(result)
+          (result) => {
+            console.log(newPermission);
+            console.log(result);
+          }
         )
       )
     }

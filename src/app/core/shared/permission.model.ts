@@ -1,6 +1,6 @@
 export interface Permission {
     permission: string,
-    endDate: {
+    embargoEndDate: {
         year: null | number,
         month: null | number,
         day: null | number
