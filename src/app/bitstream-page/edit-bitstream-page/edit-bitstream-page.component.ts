@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { combineLatest, combineLatest as observableCombineLatest, Observable, of as observableOf, Subscription, of } from 'rxjs';
 import { DynamicDatePickerModel, DynamicFormControlModel, DynamicFormGroupModel, DynamicFormLayout, DynamicFormService, DynamicInputModel, DynamicSelectModel } from '@ng-dynamic-forms/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { NonNullableFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { DynamicCustomSwitchModel } from '../../shared/form/builder/ds-dynamic-form-ui/models/custom-switch/custom-switch.model';
 import cloneDeep from 'lodash/cloneDeep';
@@ -585,6 +585,14 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         (bitstreamPermission) => {
           this.bitstreamPermission = bitstreamPermission;
           this.updateEmbargoEndDateLayout(bitstreamPermission.permission);
+          console.log(this.bitstreamPermission);
+          this.formGroup.patchValue(
+            {
+              permissionContainer: {
+                permission: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.permission : null,
+                embargoEndDate: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.endDate : null
+              }
+            });
         }
       )
     )
@@ -600,6 +608,9 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
   getBitstreamPermission(bitstreamID: string) {
     return this.http.get<Permission>(this.halService.getRootHref() + "/kul/permissions/" + bitstreamID);
+  }
+  postBitstreamPermission(bitstreamID: string, permission: Permission) {
+    return this.http.post<Permission>(this.halService.getRootHref() + "/kul/permissions/" + bitstreamID, permission);
   }
 
   /**
@@ -728,7 +739,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
    * @param selectedId
    */
   updateEmbargoEndDateLayout(selectedId: string) {
-    if (selectedId === "embargo") {
+    if (selectedId === "EMBARGO") {
       this.formLayout.embargoEndDate.grid.host = this.embargoEndDateBaseLayout;
     } else {
       this.formLayout.embargoEndDate.grid.host = this.embargoEndDateBaseLayout + ' invisible';
@@ -848,7 +859,20 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     } else {
       bitstream$ = observableOf(this.bitstream);
     }
-
+    let newPermission: Permission = {
+      permission: this.permissionModel.value as string,
+      endDate: null
+    }
+    // if (newPermission.permission=="EMBARGO" && this.embargoEndDateModel.value!=null) {
+    //   newPermission.endDate.year = this.embargoEndDateModel.value as Date
+    // }
+    if (newPermission !== this.bitstreamPermission) {
+      this.subs.push(
+        this.postBitstreamPermission(this.bitstream.id, newPermission).subscribe(
+          (result) => console.log(result)
+        )
+      )
+    }
     combineLatest([bundle$, bitstream$]).pipe(
       tap(([bundle]) => this.bundle = bundle),
       switchMap(() => {
