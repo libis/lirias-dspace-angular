@@ -592,7 +592,6 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         (bitstreamPermission) => {
           this.bitstreamPermission = bitstreamPermission;
           this.updateEmbargoEndDateLayout(bitstreamPermission.permission);
-          console.log(this.bitstreamPermission);
           this.formGroup.patchValue(
             {
               permissionContainer: {
@@ -880,24 +879,19 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     }
     if (newPermission.permission == "EMBARGO") {
 
-
-
       const value = this.embargoEndDateModel.value as ValueFromDatePicker;
-
 
       newPermission.embargoEndDate = {
         year: value.year,
         month: value.month,
         day: value.day
       };
-      console.log(newPermission);
 
     }
     if (newPermission !== this.bitstreamPermission) {
       this.subs.push(
         this.postBitstreamPermission(this.bitstream.id, newPermission).subscribe(
           (result) => {
-            console.log(newPermission);
             console.log(result);
           }
         )
