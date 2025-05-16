@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Bitstream } from '../../core/shared/bitstream.model';
+import { Permission } from '../../core/shared/permission.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { combineLatest, combineLatest as observableCombineLatest, Observable, of as observableOf, Subscription } from 'rxjs';
-import { DynamicFormControlModel, DynamicFormGroupModel, DynamicFormLayout, DynamicFormService, DynamicInputModel, DynamicSelectModel } from '@ng-dynamic-forms/core';
+import { combineLatest, combineLatest as observableCombineLatest, Observable, of as observableOf, Subscription, of } from 'rxjs';
+import { DynamicDatePickerModel, DynamicFormControlModel, DynamicFormGroupModel, DynamicFormLayout, DynamicFormService, DynamicInputModel, DynamicSelectModel } from '@ng-dynamic-forms/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { DynamicCustomSwitchModel } from '../../shared/form/builder/ds-dynamic-form-ui/models/custom-switch/custom-switch.model';
@@ -26,6 +27,8 @@ import { Item } from '../../core/shared/item.model';
 import { DsDynamicInputModel } from '../../shared/form/builder/ds-dynamic-form-ui/models/ds-dynamic-input.model';
 import { DsDynamicTextAreaModel } from '../../shared/form/builder/ds-dynamic-form-ui/models/ds-dynamic-textarea.model';
 import { PrimaryBitstreamService } from '../../core/data/primary-bitstream.service';
+import { HttpClient } from '@angular/common/http';
+import { HALEndpointService } from 'src/app/core/shared/hal-endpoint.service';
 
 @Component({
   selector: 'ds-edit-bitstream-page',
@@ -84,6 +87,15 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     "https://creativecommons.org/licenses/by-sa/4.0/"
   ];
 
+  permissions: string[] = [
+    "Public",
+    "Intranet",
+    "Embargo",
+    "Private"
+  ]
+
+
+  bitstreamPermission: Permission;
 
   /**
    * @type {string} Key prefix used to generate form messages
@@ -150,9 +162,9 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
    * The Dynamic Switch Model for the file's name
    */
   primaryBitstreamModel = new DynamicCustomSwitchModel({
-      id: 'primaryBitstream',
-      name: 'primaryBitstream'
-    }
+    id: 'primaryBitstream',
+    name: 'primaryBitstream'
+  }
   );
 
   /**
@@ -184,39 +196,55 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   /**
    * The Dynamic Input Model for license
    */
-    licenseModel = new DynamicSelectModel({
-      id: 'license',
-      name: 'license'
-    });
-  
+  licenseModel = new DynamicSelectModel({
+    id: 'license',
+    name: 'license'
+  });
+
   /**
    * The Dynamic TextArea Model for the file's internal notes
    */
-    notesModel = new DsDynamicTextAreaModel({
-      hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
-      id: 'notes',
-      name: 'notes',
-      rows: 10
-    });
-  
+  notesModel = new DsDynamicTextAreaModel({
+    hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
+    id: 'notes',
+    name: 'notes',
+    rows: 10
+  });
+
   /**
    * The Dynamic TextArea Model for comments for the file
    */
-    commentsModel = new DsDynamicTextAreaModel({
-      hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
-      id: 'comments',
-      name: 'comments',
-      rows: 10
-    });
-  
+  commentsModel = new DsDynamicTextAreaModel({
+    hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
+    id: 'comments',
+    name: 'comments',
+    rows: 10
+  });
+  /**
+ * The Dynamic Input Model for file permissions
+ */
+  permissionModel = new DynamicSelectModel({
+    id: 'permission',
+    name: 'permission'
+  });
+
+  /**
+ * The Dynamic Date Picker Model for embargo end date
+ */
+  embargoEndDateModel = new DynamicDatePickerModel({
+    id: 'embargoEndDate',
+    name: 'embargoEndDate'
+  });
+
+
   /**
    * The Dynamic Input Model for the iiif label
    */
   iiifLabelModel = new DsDynamicInputModel({
-      hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
-      id: 'iiifLabel',
-      name: 'iiifLabel'
-    },
+    hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
+    id: 'iiifLabel',
+    name: 'iiifLabel'
+  },
     {
       grid: {
         host: 'col col-lg-6 d-inline-block'
@@ -288,8 +316,8 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   /**
    * All input models in a simple array for easier iterations
    */
-  inputModels = [this.fileNameModel, this.primaryBitstreamModel, this.descriptionModel, this.licenseModel, this.notesModel, this.commentsModel, this.selectedFormatModel,
-    this.newFormatModel];
+  inputModels = [this.fileNameModel, this.primaryBitstreamModel, this.descriptionModel, this.licenseModel, this.notesModel, this.commentsModel, this.permissionModel, this.embargoEndDateModel, this.selectedFormatModel,
+  this.newFormatModel];
 
   /**
    * The dynamic form fields used for editing the information of a bitstream
@@ -331,6 +359,13 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         this.commentsModel
       ]
     }),
+    new DynamicFormGroupModel({
+      id: 'permissionContainer',
+      group: [
+        this.permissionModel,
+        this.embargoEndDateModel
+      ]
+    }),
 
     new DynamicFormGroupModel({
       id: 'formatContainer',
@@ -345,6 +380,12 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
    * The base layout of the "Other Format" input
    */
   newFormatBaseLayout = 'col col-sm-6 d-inline-block';
+
+  /**
+   * The base layout of the "Embargo End Date" date picker
+   */
+  embargoEndDateBaseLayout = 'col col-sm-6 d-inline-block';
+
 
   /**
    * Layout used for structuring the form inputs
@@ -380,11 +421,23 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         host: 'col-12 d-inline-block'
       }
     },
-    embargo: {
+    // embargo: {
+    //   grid: {
+    //     host: 'col-12 d-inline-block'
+    //   }
+    // },
+    permission: {
       grid: {
-        host: 'col-12 d-inline-block'
+        host: 'col col-sm-6 d-inline-block'
       }
     },
+
+    embargoEndDate: {
+      grid: {
+        host: this.embargoEndDateBaseLayout + ' invisible'
+      }
+    },
+
     selectedFormat: {
       grid: {
         host: 'col col-sm-6 d-inline-block'
@@ -449,17 +502,19 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   private bundle: Bundle;
 
   constructor(private route: ActivatedRoute,
-              private router: Router,
-              private changeDetectorRef: ChangeDetectorRef,
-              private location: Location,
-              private formService: DynamicFormService,
-              private translate: TranslateService,
-              private bitstreamService: BitstreamDataService,
-              public dsoNameService: DSONameService,
-              private notificationsService: NotificationsService,
-              private bitstreamFormatService: BitstreamFormatDataService,
-              private primaryBitstreamService: PrimaryBitstreamService,
-              ) {
+    private router: Router,
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private formService: DynamicFormService,
+    private translate: TranslateService,
+    private bitstreamService: BitstreamDataService,
+    public dsoNameService: DSONameService,
+    private notificationsService: NotificationsService,
+    private bitstreamFormatService: BitstreamFormatDataService,
+    private primaryBitstreamService: PrimaryBitstreamService,
+    private http: HttpClient,
+    private halService: HALEndpointService,
+  ) {
   }
 
   /**
@@ -496,6 +551,10 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       getFirstSucceededRemoteDataPayload(),
     );
 
+    const bitstreamPermission$ = bitstream$.pipe(
+      switchMap((bitstream: Bitstream) => this.getBitstreamPermission(bitstream.id))
+    )
+
     const item$ = bundle$.pipe(
       switchMap((bundle: Bundle) => bundle.item),
       getFirstSucceededRemoteDataPayload(),
@@ -520,12 +579,27 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         })
     );
 
+
+    this.subs.push(
+      bitstreamPermission$.subscribe(
+        (bitstreamPermission) => {
+          this.bitstreamPermission = bitstreamPermission;
+          this.updateEmbargoEndDateLayout(bitstreamPermission.permission);
+        }
+      )
+    )
+
     this.subs.push(
       this.translate.onLangChange
         .subscribe(() => {
           this.updateFieldTranslations();
         })
     );
+  }
+
+
+  getBitstreamPermission(bitstreamID: string) {
+    return this.http.get<Permission>(this.halService.getRootHref() + "/kul/permissions/" + bitstreamID);
   }
 
   /**
@@ -535,6 +609,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     this.formGroup = this.formService.createFormGroup(this.formModel);
     this.updateFormatModel();
     this.updateLicenseModel();
+    this.updatePermissionModel();
     this.updateForm(this.bitstream);
     this.updateFieldTranslations();
   }
@@ -561,6 +636,12 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       commentsContainer: {
         comments: bitstream.firstMetadataValue('dc.bitstream.comments')
       },
+
+      permissionContainer: {
+        permission: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.permission : null,
+        embargoEndDate: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.endDate : null
+      },
+
       formatContainer: {
         newFormat: hasValue(bitstream.firstMetadata('dc.format')) ? bitstream.firstMetadata('dc.format').value : undefined
       }
@@ -634,6 +715,25 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       }))
   }
 
+  updatePermissionModel() {
+    this.permissionModel.options = this.permissions.map((permission: string) =>
+      Object.assign({
+        value: permission.toUpperCase(),
+        label: permission
+      }))
+  }
+
+  /**
+   * Update the layout of the "Embargo End Date" input depending on the selected bitstream permission
+   * @param selectedId
+   */
+  updateEmbargoEndDateLayout(selectedId: string) {
+    if (selectedId === "embargo") {
+      this.formLayout.embargoEndDate.grid.host = this.embargoEndDateBaseLayout;
+    } else {
+      this.formLayout.embargoEndDate.grid.host = this.embargoEndDateBaseLayout + ' invisible';
+    }
+  }
 
   /**
    * Used to update translations of labels and hints on init and on language change
@@ -665,6 +765,11 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     const model = event.model;
     if (model.id === this.selectedFormatModel.id) {
       this.updateNewFormatLayout(model.value);
+    }
+    if (model.id === this.permissionModel.id) {
+      this.updateEmbargoEndDateLayout(model.value);
+    }
+    if (model.id === this.embargoEndDateModel.id) {
     }
   }
 
@@ -786,7 +891,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     } else {
       Metadata.setFirstValue(newMetadata, 'dc.bitstream.comments', rawForm.commentsContainer.comments);
     }
-    if (isEmpty(rawForm.commentsContainer.comments)) {
+    if (isEmpty(rawForm.licenseContainer.license)) {
       delete newMetadata['dc.rights.license'];
     } else {
       Metadata.setFirstValue(newMetadata, 'dc.rights.license', rawForm.licenseContainer.license);
@@ -864,8 +969,8 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       map((bundle: RemoteData<Bundle>) => bundle.payload.item.pipe(
         getFirstSucceededRemoteData(),
         map((item: RemoteData<Item>) =>
-          (item.payload.firstMetadataValue('dspace.iiif.enabled') &&
-            item.payload.firstMetadataValue('dspace.iiif.enabled').match(regexIIIFItem) !== null)
+        (item.payload.firstMetadataValue('dspace.iiif.enabled') &&
+          item.payload.firstMetadataValue('dspace.iiif.enabled').match(regexIIIFItem) !== null)
         ))));
 
     const iiifSub = combineLatest(
