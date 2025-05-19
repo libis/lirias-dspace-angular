@@ -595,8 +595,8 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
           this.formGroup.patchValue(
             {
               permissionContainer: {
-                permission: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.permission : null,
-                embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getToday()
+                permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : "EMBARGO",
+                embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getTodayNextYear()
               }
             });
         }
@@ -619,14 +619,23 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     return this.http.post<Permission>(this.halService.getRootHref() + "/kul/permissions/" + bitstreamID, permission);
   }
 
-  getToday() {
-    const date = new Date();
+  getTodayNextYear() {
+        const date = new Date();
     return {
-      year: date.getFullYear(),
+      year: date.getFullYear() + 1,
       month: date.getMonth() + 1,
       day: date.getDate()
     }
   }
+
+  // getToday() {
+  //   const date = new Date();
+  //   return {
+  //     year: date.getFullYear(),
+  //     month: date.getMonth() + 1,
+  //     day: date.getDate()
+  //   }
+  // }
   /**
    * Initializes the form.
    */
@@ -663,8 +672,8 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       },
 
       permissionContainer: {
-        permission: hasValue(this.bitstreamPermission) ? this.bitstreamPermission.permission : null,
-        embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getToday()
+        permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : "EMBARGO",
+        embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getTodayNextYear()
       },
 
       formatContainer: {
