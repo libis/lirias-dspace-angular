@@ -19,9 +19,10 @@ export class PageErrorComponent {
    * @param {ActivatedRoute} activatedRoute
    */
   constructor(private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.queryParams.subscribe((params) => {
+    /*this.activatedRoute.queryParams.subscribe((params) => {
       this.status = params.status;
       this.code = params.code;
-    });
+    });*/
+    window.location.href = 'https://www.kuleuven.be/error';
   }
 }
