@@ -27,7 +27,6 @@ export class ForbiddenComponent implements OnInit {
    */
   ngOnInit(): void {
       this.authService.clearRedirectUrl();
-      window.location.href = '/forbidden';
   }
 
 }
