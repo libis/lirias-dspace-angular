@@ -708,7 +708,7 @@
 
   "bitstream.edit.form.permission.hint": "The permission level for this file.",
 
-  "bitstream.edit.form.permission.label": "The permission level for this file",
+  "bitstream.edit.form.permission.label": "Permission",
 
   "bitstream.edit.form.fileName.hint": "Change the filename for the bitstream. Note that this will change the display bitstream URL, but old links will still resolve as long as the sequence ID does not change.",
 
