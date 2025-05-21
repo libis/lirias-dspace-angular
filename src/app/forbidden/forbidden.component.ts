@@ -26,7 +26,8 @@ export class ForbiddenComponent implements OnInit {
    * Remove redirect url from the state
    */
   ngOnInit(): void {
-    this.authService.clearRedirectUrl();
+      this.authService.clearRedirectUrl();
+      window.location.href = 'https://www.kuleuven.be/error';
   }
 
 }
