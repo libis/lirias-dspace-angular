@@ -491,9 +491,10 @@ export class AuthService {
     if (!hasValue(redirectUrl) || !redirectUrl.includes('reload/')) {
       let url = `reload/${new Date().getTime()}`;
       if (isNotEmpty(redirectUrl) && !redirectUrl.startsWith(LOGIN_ROUTE)) {
-        url += `?redirect=${encodeURIComponent(redirectUrl)}`;
+        url = `${encodeURIComponent(redirectUrl)}`;
       }
-      this.hardRedirectService.redirect(url);
+      //this.hardRedirectService.redirect(url);
+      window.location.assign(url)
     }
   }
 
