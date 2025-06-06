@@ -85,7 +85,6 @@ export class BitstreamDownloadPageComponent implements OnInit {
         this.hardRedirectService.redirect('https://kuleuven.limo.libis.be');
       } else if (isAuthorized && !isLoggedIn) {
         this.hardRedirectService.redirect(bitstream._links.content.href);
-        this.hardRedirectService.redirect('https://kuleuven.limo.libis.be');
       } else if (!isAuthorized && isLoggedIn) {
         this.router.navigateByUrl(getForbiddenRoute(), {skipLocationChange: true});
       } else if (!isAuthorized && !isLoggedIn) {
