@@ -82,7 +82,6 @@ export class BitstreamDownloadPageComponent implements OnInit {
     ).subscribe(([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
         this.hardRedirectService.redirect(fileLink);
-        this.hardRedirectService.redirect('https://kuleuven.limo.libis.be');
       } else if (isAuthorized && !isLoggedIn) {
         this.hardRedirectService.redirect(bitstream._links.content.href);
       } else if (!isAuthorized && isLoggedIn) {
