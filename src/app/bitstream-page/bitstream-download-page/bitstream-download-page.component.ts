@@ -12,7 +12,6 @@ import { FileService } from '../../core/shared/file.service';
 import { HardRedirectService } from '../../core/services/hard-redirect.service';
 import { getForbiddenRoute } from '../../app-routing-paths';
 import { RemoteData } from '../../core/data/remote-data';
-import { redirectOn4xx } from '../../core/shared/authorized.operators';
 import { isPlatformServer, Location } from '@angular/common';
 import { DSONameService } from '../../core/breadcrumbs/dso-name.service';
 import { SignpostingDataService } from '../../core/data/signposting-data.service';
@@ -57,7 +56,6 @@ export class BitstreamDownloadPageComponent implements OnInit {
       map((data) => data.bitstream));
 
     this.bitstream$ = this.bitstreamRD$.pipe(
-      redirectOn4xx(this.router, this.auth),
       getRemoteDataPayload()
     );
 
