@@ -80,7 +80,6 @@ export class BitstreamDownloadPageComponent implements OnInit {
         }
       })
     ).subscribe(([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
-        console.log("values: " + isAuthorized + ', ' + isLoggedIn + ', ' + bitstream + ', ' + fileLink);
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
         this.hardRedirectService.redirect(fileLink);
       } else if (isAuthorized && !isLoggedIn) {
