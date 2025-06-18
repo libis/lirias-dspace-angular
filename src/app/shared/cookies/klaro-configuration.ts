@@ -20,6 +20,7 @@ export const GOOGLE_ANALYTICS_KLARO_KEY = 'google-analytics';
  * For more information see https://kiprotect.com/docs/klaro/annotated-config
  */
 export const klaroConfiguration: any = {
+  noAutoLoad: true,
   storageName: ANONYMOUS_STORAGE_NAME_KLARO,
 
   privacyPolicy: './info/privacy',
