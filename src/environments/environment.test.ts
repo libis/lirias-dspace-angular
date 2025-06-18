@@ -295,8 +295,8 @@ export const environment: BuildConfig = {
     video: true
   },
   info: {
-    enableEndUserAgreement: true,
-    enablePrivacyStatement: true,
+    enableEndUserAgreement: false,
+    enablePrivacyStatement: false,
   },
   markdown: {
     enabled: false,
