@@ -81,7 +81,7 @@ export class BitstreamDownloadPageComponent implements OnInit {
           return [[isAuthorized, isLoggedIn, bitstream, '']];
         }
       })
-    ).subscribe({next : ([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
+    ).subscribe(([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
         this.hardRedirectService.redirect(fileLink);
       } else if (isAuthorized && !isLoggedIn) {
@@ -90,14 +90,9 @@ export class BitstreamDownloadPageComponent implements OnInit {
         this.router.navigateByUrl(getForbiddenRoute(), {skipLocationChange: true});
       } else if (!isAuthorized && !isLoggedIn) {
         this.route.paramMap.subscribe((map) => {
-          console.log(map);
-          this.hardRedirectService.redirect(this.halService.getRootHref() + "/api/core/bitstreams/" + map.get('id') + '/content');
+          this.hardRedirectService.redirect(this.halService.getRootHref() + "/core/bitstreams/" + map.get('id') + '/content');
         });
       }
-    },
-    error: (err) => {
-      console.log(err.toString)
-    },
     });
   }
 
