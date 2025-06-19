@@ -17,6 +17,7 @@ import { DSONameService } from '../../core/breadcrumbs/dso-name.service';
 import { SignpostingDataService } from '../../core/data/signposting-data.service';
 import { ServerResponseService } from '../../core/services/server-response.service';
 import { SignpostingLink } from '../../core/data/signposting-links.model';
+import { HALEndpointService } from 'src/app/core/shared/hal-endpoint.service';
 
 @Component({
   selector: 'ds-bitstream-download-page',
@@ -41,6 +42,7 @@ export class BitstreamDownloadPageComponent implements OnInit {
     public dsoNameService: DSONameService,
     private signpostingDataService: SignpostingDataService,
     private responseService: ServerResponseService,
+    private halService: HALEndpointService,
     @Inject(PLATFORM_ID) protected platformId: string
   ) {
     this.initPageLinks();
@@ -79,7 +81,7 @@ export class BitstreamDownloadPageComponent implements OnInit {
           return [[isAuthorized, isLoggedIn, bitstream, '']];
         }
       })
-    ).subscribe(([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
+    ).subscribe({next : ([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
         this.hardRedirectService.redirect(fileLink);
       } else if (isAuthorized && !isLoggedIn) {
@@ -87,8 +89,15 @@ export class BitstreamDownloadPageComponent implements OnInit {
       } else if (!isAuthorized && isLoggedIn) {
         this.router.navigateByUrl(getForbiddenRoute(), {skipLocationChange: true});
       } else if (!isAuthorized && !isLoggedIn) {
-        this.hardRedirectService.redirect(bitstream._links.content.href);
+        this.route.paramMap.subscribe((map) => {
+          console.log(map);
+          this.hardRedirectService.redirect(this.halService.getRootHref() + "/api/core/bitstreams/" + map.get('id') + '/content');
+        });
       }
+    },
+    error: (err) => {
+      console.log(err.toString)
+    },
     });
   }
 
