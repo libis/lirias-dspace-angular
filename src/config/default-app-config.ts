@@ -407,8 +407,8 @@ export class DefaultAppConfig implements AppConfig {
   // - A 404 page if you manually try to navigate to the privacy policy page at info/privacy
   // - All mentions of the privacy policy being removed from the UI (e.g. in the footer)
   info: InfoConfig = {
-    enableEndUserAgreement: false,
-    enablePrivacyStatement: false
+    enableEndUserAgreement: true,
+    enablePrivacyStatement: true
   };
 
   // Whether to enable Markdown (https://commonmark.org/) and MathJax (https://www.mathjax.org/)
