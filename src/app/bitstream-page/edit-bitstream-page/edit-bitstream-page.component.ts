@@ -403,6 +403,16 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         host: 'col col-sm-8 d-inline-block'
       }
     },
+    permission: {
+      grid: {
+        host: 'col col-sm-6 d-inline-block'
+      }
+    },
+    selectedFormat: {
+      grid: {
+        host: 'col col-sm-6 d-inline-block'
+      }
+    },
     primaryBitstream: {
       grid: {
         host: 'col col-sm-4 d-inline-block switch border-0'
@@ -433,21 +443,9 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     //     host: 'col-12 d-inline-block'
     //   }
     // },
-    permission: {
-      grid: {
-        host: 'col col-sm-6 d-inline-block'
-      }
-    },
-
     embargoEndDate: {
       grid: {
         host: this.embargoEndDateBaseLayout
-      }
-    },
-
-    selectedFormat: {
-      grid: {
-        host: 'col col-sm-6 d-inline-block'
       }
     },
     newFormat: {
