@@ -718,6 +718,10 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         label: 'Supporting information'
       })
     ];
+    const descr = this.bitstream.firstMetadataValue('dc.description');
+    if (descr && descr !== '' && !['Published version', 'Accepted version', 'Submitted version', 'Supporting information'].includes(descr)) {
+      this.descriptionModel.options = [Object.assign({value: descr, label: descr}), ...this.descriptionModel.options];
+    }
   }
 
   /**
