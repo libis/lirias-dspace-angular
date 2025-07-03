@@ -102,6 +102,7 @@ import {
   ],
   exports: [
     ItemOperationComponent,
+    ItemBitstreamsComponent,
   ]
 })
 export class EditItemPageModule {

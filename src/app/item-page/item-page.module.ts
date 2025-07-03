@@ -121,6 +121,7 @@ const DECLARATIONS = [
     ResultsBackButtonModule,
     UploadModule,
     DsoPageModule,
+    EditItemPageModule,
   ],
   declarations: [
     ...DECLARATIONS,
