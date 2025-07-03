@@ -341,6 +341,21 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       }
     }),
     new DynamicFormGroupModel({
+      id: 'permissionContainer',
+      group: [
+        this.permissionModel,
+        this.embargoEndDateModel
+      ]
+    }),
+
+    new DynamicFormGroupModel({
+      id: 'formatContainer',
+      group: [
+        this.selectedFormatModel,
+        this.newFormatModel
+      ]
+    }),
+    new DynamicFormGroupModel({
       id: 'descriptionContainer',
       group: [
         this.descriptionModel
@@ -362,21 +377,6 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       id: 'commentsContainer',
       group: [
         this.commentsModel
-      ]
-    }),
-    new DynamicFormGroupModel({
-      id: 'permissionContainer',
-      group: [
-        this.permissionModel,
-        this.embargoEndDateModel
-      ]
-    }),
-
-    new DynamicFormGroupModel({
-      id: 'formatContainer',
-      group: [
-        this.selectedFormatModel,
-        this.newFormatModel
       ]
     })
   ];
@@ -647,6 +647,13 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         fileName: bitstream.name,
         primaryBitstream: this.primaryBitstreamUUID === bitstream.uuid
       },
+      permissionContainer: {
+        permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : "EMBARGO",
+        embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getTodayNextYear()
+      },
+      formatContainer: {
+        newFormat: hasValue(bitstream.firstMetadata('dc.format')) ? bitstream.firstMetadata('dc.format').value : undefined
+      },
       descriptionContainer: {
         description: bitstream.firstMetadataValue('dc.description')
       },
@@ -658,15 +665,6 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       },
       commentsContainer: {
         comments: bitstream.firstMetadataValue('dc.bitstream.comments')
-      },
-
-      permissionContainer: {
-        permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : "EMBARGO",
-        embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getTodayNextYear()
-      },
-
-      formatContainer: {
-        newFormat: hasValue(bitstream.firstMetadata('dc.format')) ? bitstream.firstMetadata('dc.format').value : undefined
       }
     });
     if (this.isIIIF) {
