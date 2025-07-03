@@ -175,13 +175,11 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   );
 
   /**
-   * The Dynamic TextArea Model for the file's description
+   * TheDynamic Input Model for the file's description
    */
-  descriptionModel = new DsDynamicTextAreaModel({
-    hasSelectableMetadata: false, metadataFields: [], repeatable: false, submissionId: '',
+  descriptionModel = new DynamicSelectModel({
     id: 'description',
-    name: 'description',
-    rows: 10
+    name: 'description'
   });
 
   /**
@@ -420,7 +418,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     },
     description: {
       grid: {
-        host: 'col-12 d-inline-block'
+        host: 'col col-sm-6 d-inline-block'
       }
     },
     license: {
@@ -631,6 +629,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
    */
   setForm() {
     this.formGroup = this.formService.createFormGroup(this.formModel);
+    this.updateDescriptionModel();
     this.updateFormatModel();
     this.updateLicenseModel();
     this.updatePermissionModel();
@@ -697,6 +696,30 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       });
       this.updateNewFormatLayout(format.id);
     });
+  }
+
+  /**
+   * Create the list of description values and add options to the descriptionModel
+   */
+  updateDescriptionModel() {
+    this.descriptionModel.options = [
+      Object.assign({
+        value: 'Published version',
+        label: 'Published version'
+      }),
+      Object.assign({
+        value: 'Accepted version',
+        label: 'Accepted version'
+      }),
+      Object.assign({
+        value: 'Submitted version',
+        label: 'Submitted version'
+      }),
+      Object.assign({
+        value: 'Supporting information',
+        label: 'Supporting information'
+      })
+    ];
   }
 
   /**
