@@ -13,6 +13,13 @@ export class LocalAdminGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return true;
+    return this.authService.getAuthenticatedUserFromStore()
+      .pipe(switchMap((user) => user.groups))
+      .pipe(getFirstSucceededRemoteData(), getRemoteDataPayload())
+      .pipe(
+        map((groups) => groups.page.map((g) => g.id === 'Admins_local')),
+        catchError(_ => [false]),
+        returnForbiddenUrlTreeOrLoginOnAllFalse(this.router, this.authService, state.url)
+      );
   }
 }
