@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class LocalAdminGuard implements CanActivate {
-  constructor(protected authorizationService: AuthorizationDataService, protected router: Router, protected authService: AuthService) {
+  constructor(protected router: Router, protected authService: AuthService) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
