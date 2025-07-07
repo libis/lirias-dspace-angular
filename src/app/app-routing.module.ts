@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, NoPreloading } from '@angular/router';
 import { AuthBlockingGuard } from './core/auth/auth-blocking.guard';
 
+import { AuthenticatedGuard } from './core/auth/authenticated.guard';
 import {
   SiteAdministratorGuard
 } from './core/data/feature-authorization/feature-authorization-guard/site-administrator.guard';
@@ -59,7 +60,7 @@ import { LocalAdminGuard } from './local-admin.guard';
             loadChildren: () => import('./home-page/home-page.module')
               .then((m) => m.HomePageModule),
             data: { showBreadcrumbs: false },
-            canActivate: [LocalAdminGuard]
+            canActivate: [AuthenticatedGuard, LocalAdminGuard]
           },
           {
             path: 'community-list',
@@ -107,7 +108,7 @@ import { LocalAdminGuard } from './local-admin.guard';
             path: ITEM_MODULE_PATH,
             loadChildren: () => import('./item-page/item-page.module')
               .then((m) => m.ItemPageModule),
-              canActivate: [LocalAdminGuard]
+              canActivate: [AuthenticatedGuard, LocalAdminGuard]
           },
           {
             path: 'entities/:entity-type',
@@ -137,7 +138,7 @@ import { LocalAdminGuard } from './local-admin.guard';
             path: 'search',
             loadChildren: () => import('./search-page/search-page-routing.module')
               .then((m) => m.SearchPageRoutingModule),
-            canActivate: [LocalAdminGuard]
+            canActivate: [AuthenticatedGuard, LocalAdminGuard]
           },
           {
             path: 'browse',
