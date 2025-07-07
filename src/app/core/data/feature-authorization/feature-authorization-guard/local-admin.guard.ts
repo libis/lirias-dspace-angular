@@ -23,10 +23,9 @@ export class LocalAdminGuard implements CanActivate {
       .pipe(getFirstSucceededRemoteData())
       .pipe(getRemoteDataPayload())
       .pipe(map((groups) => {
-        console.log("can activate -> groups");
         return groups.page.map((g) => {
-        console.log("can activate -> group -> " + g.id);
-          return g.id === 'Admins_local';
+        console.log("can activate -> group -> " + g.name);
+          return g.name === 'Admins_local';
         });
       }))
       .pipe(returnForbiddenUrlTreeOrLoginOnAllFalse(this.router, this.authService, state.url));
