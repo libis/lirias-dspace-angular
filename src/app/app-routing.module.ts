@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, NoPreloading } from '@angular/router';
 import { AuthBlockingGuard } from './core/auth/auth-blocking.guard';
 
-import { AuthenticatedGuard } from './core/auth/authenticated.guard';
 import {
   SiteAdministratorGuard
 } from './core/data/feature-authorization/feature-authorization-guard/site-administrator.guard';
@@ -27,20 +26,15 @@ import { COMMUNITY_MODULE_PATH } from './community-page/community-page-routing-p
 import { ITEM_MODULE_PATH } from './item-page/item-page-routing-paths';
 import { PROCESS_MODULE_PATH } from './process-page/process-page-routing.paths';
 import { ReloadGuard } from './core/reload/reload.guard';
-import { EndUserAgreementCurrentUserGuard } from './core/end-user-agreement/end-user-agreement-current-user.guard';
-import { SiteRegisterGuard } from './core/data/feature-authorization/feature-authorization-guard/site-register.guard';
 import { ThemedPageNotFoundComponent } from './pagenotfound/themed-pagenotfound.component';
 import { ThemedForbiddenComponent } from './forbidden/themed-forbidden.component';
-import {
-  GroupAdministratorGuard
-} from './core/data/feature-authorization/feature-authorization-guard/group-administrator.guard';
 import {
   ThemedPageInternalServerErrorComponent
 } from './page-internal-server-error/themed-page-internal-server-error.component';
 import { ServerCheckGuard } from './core/server-check/server-check.guard';
 import { MenuResolver } from './menu.resolver';
 import { ThemedPageErrorComponent } from './page-error/themed-page-error.component';
-import { LocalAdminGuard } from './core/data/feature-authorization/feature-authorization-guard/local-admin.guard';
+import { LocalAdminGuard } from './local-admin.guard';
 
 @NgModule({
   imports: [
@@ -65,7 +59,7 @@ import { LocalAdminGuard } from './core/data/feature-authorization/feature-autho
             loadChildren: () => import('./home-page/home-page.module')
               .then((m) => m.HomePageModule),
             data: { showBreadcrumbs: false },
-            canActivate: [LocalAdminGuard]
+            canActivate: [SiteAdministratorGuard, LocalAdminGuard]
           },
           {
             path: 'community-list',
@@ -113,7 +107,7 @@ import { LocalAdminGuard } from './core/data/feature-authorization/feature-autho
             path: ITEM_MODULE_PATH,
             loadChildren: () => import('./item-page/item-page.module')
               .then((m) => m.ItemPageModule),
-              canActivate: [LocalAdminGuard]
+              canActivate: [SiteAdministratorGuard, LocalAdminGuard]
           },
           {
             path: 'entities/:entity-type',
@@ -143,7 +137,7 @@ import { LocalAdminGuard } from './core/data/feature-authorization/feature-autho
             path: 'search',
             loadChildren: () => import('./search-page/search-page-routing.module')
               .then((m) => m.SearchPageRoutingModule),
-            canActivate: [LocalAdminGuard]
+            canActivate: [SiteAdministratorGuard, LocalAdminGuard]
           },
           {
             path: 'browse',

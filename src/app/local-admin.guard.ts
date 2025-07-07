@@ -1,11 +1,11 @@
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { map, Observable, switchMap} from 'rxjs';
-import { AuthService } from '../../../auth/auth.service';
+import { AuthService } from 'src/app/core/auth/auth.service';
 import { getFirstSucceededRemoteData, getRemoteDataPayload } from 'src/app/core/shared/operators';
 import { returnForbiddenUrlTreeOrLoginOnAllFalse } from 'src/app/core/shared/authorized.operators';
 import { Injectable } from '@angular/core';
 import { followLink } from 'src/app/shared/utils/follow-link-config.model';
-import { EPersonDataService } from '../../../eperson/eperson-data.service';
+import { EPersonDataService } from 'src/app/core/eperson/eperson-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,7 @@ export class LocalAdminGuard implements CanActivate {
       .pipe(switchMap((user) => user.groups))
       .pipe(getFirstSucceededRemoteData())
       .pipe(getRemoteDataPayload())
-      .pipe(map((groups) => {
-        return groups.page.map((g) => {
-        console.log("can activate -> group -> " + g.name);
-          return g.name === 'Admins_local';
-        });
-      }))
+      .pipe(map((groups) => groups.page.map((g) => g.name === 'Admins_local')))
       .pipe(returnForbiddenUrlTreeOrLoginOnAllFalse(this.router, this.authService, state.url));
   }
 }
