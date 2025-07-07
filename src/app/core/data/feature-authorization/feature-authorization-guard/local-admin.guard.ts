@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
 import { AuthorizationDataService } from '../authorization-data.service';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { map, Observable, switchMap} from 'rxjs';
+import { catchError, map, Observable, switchMap} from 'rxjs';
 import { AuthService } from '../../../auth/auth.service';
 import { getFirstSucceededRemoteData, getRemoteDataPayload } from 'src/app/core/shared/operators';
 import { returnForbiddenUrlTreeOrLoginOnAllFalse } from 'src/app/core/shared/authorized.operators';
@@ -16,6 +15,7 @@ export class LocalAdminGuard implements CanActivate {
       .pipe(getFirstSucceededRemoteData(), getRemoteDataPayload())
       .pipe(
         map((groups) => groups.page.map((g) => g.id === 'Admins_local')),
+        catchError(_ => [false]),
         returnForbiddenUrlTreeOrLoginOnAllFalse(this.router, this.authService, state.url)
       );
   }
