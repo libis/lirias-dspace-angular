@@ -59,7 +59,7 @@ import { LocalAdminGuard } from './local-admin.guard';
             loadChildren: () => import('./home-page/home-page.module')
               .then((m) => m.HomePageModule),
             data: { showBreadcrumbs: false },
-            canActivate: [SiteAdministratorGuard, LocalAdminGuard]
+            canActivate: [LocalAdminGuard]
           },
           {
             path: 'community-list',
@@ -107,7 +107,7 @@ import { LocalAdminGuard } from './local-admin.guard';
             path: ITEM_MODULE_PATH,
             loadChildren: () => import('./item-page/item-page.module')
               .then((m) => m.ItemPageModule),
-              canActivate: [SiteAdministratorGuard, LocalAdminGuard]
+              canActivate: [LocalAdminGuard]
           },
           {
             path: 'entities/:entity-type',
@@ -137,7 +137,7 @@ import { LocalAdminGuard } from './local-admin.guard';
             path: 'search',
             loadChildren: () => import('./search-page/search-page-routing.module')
               .then((m) => m.SearchPageRoutingModule),
-            canActivate: [SiteAdministratorGuard, LocalAdminGuard]
+            canActivate: [LocalAdminGuard]
           },
           {
             path: 'browse',

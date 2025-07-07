@@ -6,15 +6,20 @@ import { returnForbiddenUrlTreeOrLoginOnAllFalse } from 'src/app/core/shared/aut
 import { Injectable } from '@angular/core';
 import { followLink } from 'src/app/shared/utils/follow-link-config.model';
 import { EPersonDataService } from 'src/app/core/eperson/eperson-data.service';
+import { AuthorizationDataService } from './core/data/feature-authorization/authorization-data.service';
+import { FeatureID } from './core/data/feature-authorization/feature-id';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalAdminGuard implements CanActivate {
-  constructor(protected router: Router, protected authService: AuthService, protected epersonService: EPersonDataService) {
+  constructor(protected router: Router, protected authService: AuthService, protected epersonService: EPersonDataService, protected authorizationService: AuthorizationDataService) {
   }
 
   canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if (this.authorizationService.isAuthorized(FeatureID.AdministratorOf)) {
+      return true;
+    }
     return this.authService.getAuthenticatedUserFromStore()
       .pipe(switchMap((user) => this.epersonService.findById(user.id, true, true, followLink('groups'))))
       .pipe(getFirstSucceededRemoteData())
