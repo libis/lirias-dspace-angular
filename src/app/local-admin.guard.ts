@@ -17,7 +17,7 @@ export class LocalAdminGuard implements CanActivate {
   }
 
   canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (this.authorizationService.isAuthorized(FeatureID.AdministratorOf)) {
+    if (this.authorizationService.isAuthorized(FeatureID.AdministratorOf, undefined, undefined, false)) {
       console.log('authorized as administrator in local admin guard');
       return true;
     }
