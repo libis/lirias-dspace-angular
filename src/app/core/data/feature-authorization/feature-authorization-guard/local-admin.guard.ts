@@ -1,4 +1,3 @@
-import { AuthorizationDataService } from '../authorization-data.service';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { catchError, map, Observable, switchMap} from 'rxjs';
 import { AuthService } from '../../../auth/auth.service';
