@@ -40,6 +40,7 @@ import {
 import { ServerCheckGuard } from './core/server-check/server-check.guard';
 import { MenuResolver } from './menu.resolver';
 import { ThemedPageErrorComponent } from './page-error/themed-page-error.component';
+import { LocalAdminGuard } from './core/data/feature-authorization/feature-authorization-guard/local-admin.guard';
 
 @NgModule({
   imports: [
@@ -64,7 +65,7 @@ import { ThemedPageErrorComponent } from './page-error/themed-page-error.compone
             loadChildren: () => import('./home-page/home-page.module')
               .then((m) => m.HomePageModule),
             data: { showBreadcrumbs: false },
-            canActivate: [SiteAdministratorGuard]
+            canActivate: [LocalAdminGuard]
           },
           {
             path: 'community-list',
@@ -112,7 +113,7 @@ import { ThemedPageErrorComponent } from './page-error/themed-page-error.compone
             path: ITEM_MODULE_PATH,
             loadChildren: () => import('./item-page/item-page.module')
               .then((m) => m.ItemPageModule),
-            canActivate: [SiteAdministratorGuard]
+              canActivate: [LocalAdminGuard]
           },
           {
             path: 'entities/:entity-type',
@@ -142,7 +143,7 @@ import { ThemedPageErrorComponent } from './page-error/themed-page-error.compone
             path: 'search',
             loadChildren: () => import('./search-page/search-page-routing.module')
               .then((m) => m.SearchPageRoutingModule),
-            canActivate: [SiteAdministratorGuard]
+            canActivate: [LocalAdminGuard]
           },
           {
             path: 'browse',
