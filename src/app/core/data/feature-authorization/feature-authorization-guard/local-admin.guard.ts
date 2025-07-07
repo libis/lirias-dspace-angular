@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SingleFeatureAuthorizationGuard } from './single-feature-authorization.guard';
-import { FeatureID } from '../feature-id';
 import { AuthorizationDataService } from '../authorization-data.service';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable, of as observableOf } from 'rxjs';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { map, Observable, switchMap} from 'rxjs';
 import { AuthService } from '../../../auth/auth.service';
+import { getFirstCompletedRemoteData } from 'src/app/core/shared/operators';
 
 /**
  * Prevent unauthorized activating and loading of routes when the current authenticated user doesn't have administrator
@@ -13,15 +12,12 @@ import { AuthService } from '../../../auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class LocalAdminGuard extends SingleFeatureAuthorizationGuard {
+
+export class LocalAdminGuard implements CanActivate {
   constructor(protected authorizationService: AuthorizationDataService, protected router: Router, protected authService: AuthService) {
-    super(authorizationService, router, authService);
   }
 
-  /**
-   * Check administrator authorization rights
-   */
-  getFeatureID(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<FeatureID> {
-    return observableOf(FeatureID.AdministratorOf);
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    return this.authService.getAuthenticatedUserFromStore().pipe(switchMap((user) => user.groups)).pipe(map((groups) => groups.hasCompleted && groups.payload.page.some((g) => g.name === 'Admins_local')));
   }
 }
