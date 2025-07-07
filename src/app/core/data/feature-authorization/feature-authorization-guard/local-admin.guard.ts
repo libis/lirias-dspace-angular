@@ -4,7 +4,11 @@ import { catchError, map, Observable, switchMap} from 'rxjs';
 import { AuthService } from '../../../auth/auth.service';
 import { getFirstSucceededRemoteData, getRemoteDataPayload } from 'src/app/core/shared/operators';
 import { returnForbiddenUrlTreeOrLoginOnAllFalse } from 'src/app/core/shared/authorized.operators';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+  providedIn: 'root'
+})
 export class LocalAdminGuard implements CanActivate {
   constructor(protected authorizationService: AuthorizationDataService, protected router: Router, protected authService: AuthService) {
   }
