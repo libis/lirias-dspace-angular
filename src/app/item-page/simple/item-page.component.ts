@@ -148,6 +148,6 @@ export class ItemPageComponent implements OnInit, OnDestroy {
       .pipe(switchMap((user) => user.groups))
       .pipe(getFirstSucceededRemoteData())
       .pipe(getRemoteDataPayload())
-      .pipe(map((groups) => groups.page.some((g) => 'Administrator' === g.name)))
+      .pipe(map((groups) => !groups.page.some((g) => 'Administrator' === g.name)))
   }
 }
