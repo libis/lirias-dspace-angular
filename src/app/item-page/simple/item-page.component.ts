@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { isPlatformServer } from '@angular/common';
 
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 
 import { ItemDataService } from '../../core/data/item-data.service';
 import { RemoteData } from '../../core/data/remote-data';
 import { Item } from '../../core/shared/item.model';
 import { fadeInOut } from '../../shared/animations/fade';
-import { getAllSucceededRemoteDataPayload } from '../../core/shared/operators';
+import { getAllSucceededRemoteDataPayload, getFirstSucceededRemoteData, getRemoteDataPayload } from '../../core/shared/operators';
 import { ViewMode } from '../../core/shared/view-mode.model';
 import { AuthService } from '../../core/auth/auth.service';
 import { getItemPageRoute } from '../item-page-routing-paths';
@@ -21,6 +21,8 @@ import { SignpostingDataService } from '../../core/data/signposting-data.service
 import { SignpostingLink } from '../../core/data/signposting-links.model';
 import { isNotEmpty } from '../../shared/empty.util';
 import { LinkDefinition, LinkHeadService } from '../../core/services/link-head.service';
+import { EPersonDataService } from 'src/app/core/eperson/eperson-data.service';
+import { followLink } from 'src/app/shared/utils/follow-link-config.model';
 
 /**
  * This component renders a simple item page.
@@ -77,6 +79,7 @@ export class ItemPageComponent implements OnInit, OnDestroy {
     protected responseService: ServerResponseService,
     protected signpostingDataService: SignpostingDataService,
     protected linkHeadService: LinkHeadService,
+    protected epersonService: EPersonDataService,
     @Inject(PLATFORM_ID) protected platformId: string
   ) {
     this.initPageLinks();
@@ -135,5 +138,16 @@ export class ItemPageComponent implements OnInit, OnDestroy {
     this.signpostingLinks.forEach((link: SignpostingLink) => {
       this.linkHeadService.removeTag(`href='${link.href}'`);
     });
+  }
+
+  isInAdministratorGroup(): Observable<boolean> {
+    return this.authService.getAuthenticatedUserFromStore()
+      .pipe(switchMap((user) => this.epersonService.findById(user.id, true, true, followLink('groups'))))
+      .pipe(getFirstSucceededRemoteData())
+      .pipe(getRemoteDataPayload())
+      .pipe(switchMap((user) => user.groups))
+      .pipe(getFirstSucceededRemoteData())
+      .pipe(getRemoteDataPayload())
+      .pipe(map((groups) => groups.page.some((g) => 'Administrator' === g.name)))
   }
 }
