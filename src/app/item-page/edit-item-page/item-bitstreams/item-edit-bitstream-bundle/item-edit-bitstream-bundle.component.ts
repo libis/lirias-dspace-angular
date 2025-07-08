@@ -45,6 +45,8 @@ export class ItemEditBitstreamBundleComponent implements OnInit {
    */
   @Output() dropObject: EventEmitter<any> = new EventEmitter<any>();
 
+  @Input() readOnly: boolean;
+
   /**
    * The bootstrap sizes used for the Bundle Name column
    * This column stretches over the first 3 columns and thus is a combination of their sizes processed in ngOnInit

@@ -43,6 +43,8 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
    */
   @Input() columnSizes: ResponsiveTableSizes;
 
+  @Input() readOnly: boolean;
+
   /**
    * The bitstream of this field
    */

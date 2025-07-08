@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy } from '@angular/core';
 import { AbstractItemUpdateComponent } from '../abstract-item-update/abstract-item-update.component';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 import { Observable, Subscription, zip as observableZip } from 'rxjs';
@@ -35,6 +35,8 @@ import { FieldChangeType } from '../../../core/data/object-updates/field-change-
  * Component for displaying an item's bitstreams edit page
  */
 export class ItemBitstreamsComponent extends AbstractItemUpdateComponent implements OnDestroy {
+
+  @Input() readOnly: boolean = false;
 
   /**
    * The currently listed bundles

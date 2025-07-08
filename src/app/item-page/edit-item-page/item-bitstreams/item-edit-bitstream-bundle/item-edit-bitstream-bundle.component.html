@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="{{columnSizes.columns[3].buildClasses()}} text-center row-element">
-      <div class="btn-group bundle-action-buttons">
+      <div class="btn-group bundle-action-buttons" [hidden]="readOnly">
         <button [routerLink]="[itemPageRoute, 'bitstreams', 'new']"
                 [queryParams]="{bundle: bundle.id}"
                 class="btn btn-outline-success btn-sm"
