@@ -35,6 +35,8 @@ export class PaginatedDragAndDropBitstreamListComponent extends AbstractPaginate
    */
   @Input() columnSizes: ResponsiveTableSizes;
 
+  @Input() readOnly: boolean;
+
   constructor(protected objectUpdatesService: ObjectUpdatesService,
               protected elRef: ElementRef,
               protected objectValuesPipe: ObjectValuesPipe,
