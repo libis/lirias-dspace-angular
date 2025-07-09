@@ -102,7 +102,7 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
       return '';
     }
     const date = new Date(permission.embargoEndDate.year, permission.embargoEndDate.month, permission.embargoEndDate.day);
-    return formatInTimeZone(date, 'UTC', 'yyyy-MM-dd');
+    return ' ' + formatInTimeZone(date, 'UTC', 'yyyy-MM-dd');
   }
 
   /**
