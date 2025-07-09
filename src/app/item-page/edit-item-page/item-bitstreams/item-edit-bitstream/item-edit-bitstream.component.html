@@ -23,10 +23,11 @@
     </div>
   </div>
   <div class="{{columnSizes.columns[3].buildClasses()}} row-element d-flex align-items-center">
-    <div class="text-center w-100">
-        <span class="text-truncate">
-            {{ (permission$ | async) }}
-        </span>
+    <div class="w-100">
+        <div class="text-truncate" [tooltipClass]="'larger-tooltip'" placement="bottom"
+            [ngbTooltip]="permission$">
+            {{ permission$ }}
+        </div>
     </div>
   </div>
   <div class="{{columnSizes.columns[4].buildClasses()}} row-element d-flex align-items-center">
