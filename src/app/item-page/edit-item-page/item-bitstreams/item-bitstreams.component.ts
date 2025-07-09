@@ -65,7 +65,7 @@ export class ItemBitstreamsComponent extends AbstractItemUpdateComponent impleme
     // Permission column
     new ResponsiveColumnSizes(2, 2, 2, 2, 2),
     // Actions column
-    new ResponsiveColumnSizes(5, 5, 4, 3, 3)
+    new ResponsiveColumnSizes(4, 4, 3, 2, 2)
   ]);
 
   /**
