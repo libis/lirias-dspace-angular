@@ -3,9 +3,9 @@ import { Bitstream } from '../../core/shared/bitstream.model';
 import { Permission } from '../../core/shared/permission.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { combineLatest, combineLatest as observableCombineLatest, Observable, of as observableOf, Subscription, of } from 'rxjs';
-import { DynamicDateControlValue, DynamicDatePickerModel, DynamicFormControlModel, DynamicFormGroupModel, DynamicFormLayout, DynamicFormService, DynamicInputModel, DynamicSelectModel } from '@ng-dynamic-forms/core';
-import { NonNullableFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { combineLatest, combineLatest as observableCombineLatest, Observable, of as observableOf, Subscription } from 'rxjs';
+import { DynamicDatePickerModel, DynamicFormControlModel, DynamicFormGroupModel, DynamicFormLayout, DynamicFormService, DynamicInputModel, DynamicSelectModel } from '@ng-dynamic-forms/core';
+import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { DynamicCustomSwitchModel } from '../../shared/form/builder/ds-dynamic-form-ui/models/custom-switch/custom-switch.model';
 import cloneDeep from 'lodash/cloneDeep';
@@ -85,21 +85,21 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
    * A list of available cc-licenses
    */
   ccLicenses: string[] = [
-    "All rights reserved",
-    "https://creativecommons.org/licenses/by/4.0/",
-    "https://creativecommons.org/licenses/by-nc/4.0/",
-    "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-    "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-    "https://creativecommons.org/licenses/by-nd/4.0/",
-    "https://creativecommons.org/licenses/by-sa/4.0/"
+    'All rights reserved',
+    'https://creativecommons.org/licenses/by/4.0/',
+    'https://creativecommons.org/licenses/by-nc/4.0/',
+    'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+    'https://creativecommons.org/licenses/by-nd/4.0/',
+    'https://creativecommons.org/licenses/by-sa/4.0/'
   ];
 
   permissions: string[] = [
-    "Public",
-    "Intranet",
-    "Embargo",
-    "Private"
-  ]
+    'Public',
+    'Intranet',
+    'Embargo',
+    'Private'
+  ];
 
 
   bitstreamPermission: Permission;
@@ -556,7 +556,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
     const bitstreamPermission$ = bitstream$.pipe(
       switchMap((bitstream: Bitstream) => this.getBitstreamPermission(bitstream.id))
-    )
+    );
 
     const item$ = bundle$.pipe(
       switchMap((bundle: Bundle) => bundle.item),
@@ -591,13 +591,13 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
           this.formGroup.patchValue(
             {
               permissionContainer: {
-                permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : "EMBARGO",
+                permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : 'EMBARGO',
                 embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getTodayNextYear()
               }
             });
         }
       )
-    )
+    );
 
     this.subs.push(
       this.translate.onLangChange
@@ -649,7 +649,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
         primaryBitstream: this.primaryBitstreamUUID === bitstream.uuid
       },
       permissionContainer: {
-        permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : "EMBARGO",
+        permission: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.permission) ? this.bitstreamPermission.permission : 'EMBARGO',
         embargoEndDate: hasValue(this.bitstreamPermission) && hasValue(this.bitstreamPermission?.embargoEndDate?.year) ? this.bitstreamPermission.embargoEndDate : this.getTodayNextYear()
       },
       formatContainer: {
@@ -762,7 +762,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       Object.assign({
         value: license,
         label: license
-      }))
+      }));
   }
 
   updatePermissionModel() {
@@ -770,7 +770,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       Object.assign({
         value: permission.toUpperCase(),
         label: permission
-      }))
+      }));
   }
 
   /**
@@ -778,7 +778,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
    * @param selectedId
    */
   updateEmbargoEndDateLayout(selectedId: string) {
-    if (selectedId === "EMBARGO") {
+    if (selectedId === 'EMBARGO') {
       this.formLayout.embargoEndDate.grid.host = this.embargoEndDateBaseLayout;
     } else {
       this.formLayout.embargoEndDate.grid.host = this.embargoEndDateBaseLayout + ' invisible';
@@ -818,8 +818,6 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     }
     if (model.id === this.permissionModel.id) {
       this.updateEmbargoEndDateLayout(model.value);
-    }
-    if (model.id === this.embargoEndDateModel.id) {
     }
   }
 
@@ -901,8 +899,8 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     let newPermission: Permission = {
       permission: this.permissionModel.value as string,
       embargoEndDate: null
-    }
-    if (newPermission.permission == "EMBARGO") {
+    };
+    if (newPermission.permission === 'EMBARGO') {
 
       const value = this.embargoEndDateModel.value as ValueFromDatePicker;
 
@@ -920,7 +918,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
             console.log(result);
           }
         )
-      )
+      );
     }
     combineLatest([bundle$, bitstream$]).pipe(
       tap(([bundle]) => this.bundle = bundle),
