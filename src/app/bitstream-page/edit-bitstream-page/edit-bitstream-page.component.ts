@@ -609,15 +609,15 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
 
   getBitstreamPermission(bitstreamID: string): Observable<Permission> {
-    return this.http.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID).pipe(map( (permission) => {
+    return this.http.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID).pipe(map((permission) => {
       console.log(`getting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
       return permission;
     }));
   }
 
-  postBitstreamPermission(bitstreamID: string, permission: Permission): Observable<Permission> {
-      console.log(`posting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
-    return this.http.post<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID, permission);
+  postBitstreamPermission(bitstreamID: string, permission: Permission): void {
+    console.log(`posting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
+    this.http.post(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID, permission);
   }
 
   getTodayNextYear() {
@@ -725,7 +725,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     ];
     const descr = this.bitstream.firstMetadataValue('dc.description');
     if (descr && descr !== '' && !['Published version', 'Accepted version', 'Submitted version', 'Supporting information'].includes(descr)) {
-      this.descriptionModel.options = [Object.assign({value: descr, label: descr}), ...this.descriptionModel.options];
+      this.descriptionModel.options = [Object.assign({ value: descr, label: descr }), ...this.descriptionModel.options];
     }
   }
 
@@ -916,13 +916,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
     }
     if (newPermission !== this.bitstreamPermission) {
-      this.subs.push(
-        this.postBitstreamPermission(this.bitstream.id, newPermission).subscribe(
-          (result) => {
-            console.log(result);
-          }
-        )
-      );
+      this.postBitstreamPermission(this.bitstream.id, newPermission);;
     }
     combineLatest([bundle$, bitstream$]).pipe(
       tap(([bundle]) => this.bundle = bundle),
