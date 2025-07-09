@@ -65,7 +65,7 @@ export class ItemEditBitstreamBundleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.bundleNameColumn = this.columnSizes.combineColumns(0, 2);
+    this.bundleNameColumn = this.columnSizes.combineColumns(0, 3);
     this.viewContainerRef.createEmbeddedView(this.bundleView);
     this.itemPageRoute = getItemPageRoute(this.item);
   }
