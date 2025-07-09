@@ -25,8 +25,8 @@
   <div class="{{columnSizes.columns[3].buildClasses()}} row-element d-flex align-items-center">
     <div class="w-100">
         <div class="text-truncate" [tooltipClass]="'larger-tooltip'" placement="bottom"
-            [ngbTooltip]="permission$">
-            {{ permission$ }}
+            [ngbTooltip]="(permission$ | async)">
+            {{ (permission$ | async) }}
         </div>
     </div>
   </div>
