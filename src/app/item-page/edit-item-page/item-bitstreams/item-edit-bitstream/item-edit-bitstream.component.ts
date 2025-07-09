@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewCont
 import { Bitstream } from '../../../../core/shared/bitstream.model';
 import cloneDeep from 'lodash/cloneDeep';
 import { ObjectUpdatesService } from '../../../../core/data/object-updates/object-updates.service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { BitstreamFormat } from '../../../../core/shared/bitstream-format.model';
 import { getRemoteDataPayload, getFirstSucceededRemoteData } from '../../../../core/shared/operators';
 import { ResponsiveTableSizes } from '../../../../shared/responsive-table-sizes/responsive-table-sizes';
@@ -10,6 +10,10 @@ import { DSONameService } from '../../../../core/breadcrumbs/dso-name.service';
 import { FieldUpdate } from '../../../../core/data/object-updates/field-update.model';
 import { FieldChangeType } from '../../../../core/data/object-updates/field-change-type.model';
 import { getBitstreamDownloadRoute } from '../../../../app-routing-paths';
+import { Permission } from 'src/app/core/shared/permission.model';
+import { HttpClient } from '@angular/common/http';
+import { HALEndpointService } from 'src/app/core/shared/hal-endpoint.service';
+import { formatInTimeZone }  from 'date-fns-tz';
 
 @Component({
   selector: 'ds-item-edit-bitstream',
@@ -64,9 +68,12 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
    * The format of the bitstream
    */
   format$: Observable<BitstreamFormat>;
+  permission$: Observable<string>;
 
   constructor(private objectUpdatesService: ObjectUpdatesService,
               private dsoNameService: DSONameService,
+              private httpClient: HttpClient,
+              private halService: HALEndpointService,
               private viewContainerRef: ViewContainerRef) {
   }
 
@@ -86,6 +93,16 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
       getFirstSucceededRemoteData(),
       getRemoteDataPayload()
     );
+    const permission = this.httpClient.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + this.bitstream.id);
+    this.permission$ = permission.pipe(map((p) => p.permission + this.formatEmabargoEndDate(p)));
+  }
+
+  formatEmabargoEndDate(permission: Permission): string {
+    if (permission.embargoEndDate === null || permission.embargoEndDate.year == null) {
+      return '';
+    }
+    const date = new Date(permission.embargoEndDate.year, permission.embargoEndDate.month, permission.embargoEndDate.day);
+    return formatInTimeZone(date, 'UTC', 'yyyy-MM-dd');
   }
 
   /**

@@ -36,7 +36,7 @@ import { FieldChangeType } from '../../../core/data/object-updates/field-change-
  */
 export class ItemBitstreamsComponent extends AbstractItemUpdateComponent implements OnDestroy {
 
-  @Input() readOnly: boolean = false;
+  @Input() readOnly = false;
 
   /**
    * The currently listed bundles
@@ -61,6 +61,8 @@ export class ItemBitstreamsComponent extends AbstractItemUpdateComponent impleme
     // Description column
     new ResponsiveColumnSizes(2, 3, 3, 3, 3),
     // Format column
+    new ResponsiveColumnSizes(2, 2, 2, 2, 2),
+    // Permission column
     new ResponsiveColumnSizes(2, 2, 2, 2, 2),
     // Actions column
     new ResponsiveColumnSizes(6, 5, 4, 3, 3)
