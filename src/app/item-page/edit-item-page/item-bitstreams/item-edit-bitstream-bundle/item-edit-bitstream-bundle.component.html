@@ -6,7 +6,7 @@
         {{'item.edit.bitstreams.bundle.name' | translate:{ name: dsoNameService.getName(bundle) } }}
       </div>
     </div>
-    <div class="{{columnSizes.columns[4].buildClasses()}} text-center row-element">
+    <div class="{{columnSizes.columns[3].buildClasses()}} text-center row-element">
       <div class="btn-group bundle-action-buttons" *ngIf="!readOnly">
         <button [routerLink]="[itemPageRoute, 'bitstreams', 'new']"
                 [queryParams]="{bundle: bundle.id}"
