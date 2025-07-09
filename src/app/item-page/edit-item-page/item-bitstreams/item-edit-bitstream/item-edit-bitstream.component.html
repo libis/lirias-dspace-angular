@@ -1,6 +1,6 @@
 <ng-template #bitstreamView>
   <div class="{{columnSizes.columns[0].buildClasses()}} row-element d-flex">
-    <ng-content select="[slot=drag-handle]"></ng-content>
+    <ng-content select="[slot=drag-handle]" *ngIf="!readOnly"></ng-content>
     <div class="float-left d-flex align-items-center overflow-hidden">
       <div class="text-truncate" [tooltipClass]="'larger-tooltip'" placement="bottom" [ngbTooltip]="bitstreamName">
         {{ bitstreamName }}
