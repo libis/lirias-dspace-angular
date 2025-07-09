@@ -608,20 +608,21 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   }
 
 
-  getBitstreamPermission(bitstreamID: string) {
-    return this.http.get<Permission>(this.halService.getRootHref() + "/kul/permissions/" + bitstreamID);
+  getBitstreamPermission(bitstreamID: string): Observable<Permission> {
+    return this.http.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID);
   }
-  postBitstreamPermission(bitstreamID: string, permission: Permission) {
-    return this.http.post<Permission>(this.halService.getRootHref() + "/kul/permissions/" + bitstreamID, permission);
+
+   postBitstreamPermission(bitstreamID: string, permission: Permission): Observable<Permission> {
+    return this.http.post<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID, permission);
   }
 
   getTodayNextYear() {
-        const date = new Date();
+    const date = new Date();
     return {
-      year: date.getFullYear() + 1,
-      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+      month: date.getMonth(),
       day: date.getDate()
-    }
+    };
   }
 
   /**
