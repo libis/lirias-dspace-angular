@@ -21,6 +21,12 @@
             {{ (format$ | async)?.shortDescription }}
         </span>
     </div>
+    <div class="w-100">
+        <div class="text-truncate" [tooltipClass]="'larger-tooltip'" placement="bottom"
+            [ngbTooltip]="(format$ | async)?.shortDescription">
+            {{ (format$ | async)?.shortDescription }}
+        </div>
+    </div>
   </div>
   <div class="{{columnSizes.columns[3].buildClasses()}} row-element d-flex align-items-center">
     <div class="w-100">
