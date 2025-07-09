@@ -93,8 +93,14 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
       getFirstSucceededRemoteData(),
       getRemoteDataPayload()
     );
-    const permission = this.httpClient.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + this.bitstream.id);
-    this.permission$ = permission.pipe(map((p) => p.permission + this.formatEmabargoEndDate(p)));
+    this.permission$ = this.getBitstreamPermission(this.bitstream.id).pipe(map((p) => p.permission + this.formatEmabargoEndDate(p)));
+  }
+
+  getBitstreamPermission(bitstreamID: string): Observable<Permission> {
+    return this.httpClient.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID).pipe(map( (permission) => {
+      console.log(`getting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
+      return permission;
+    }));
   }
 
   formatEmabargoEndDate(permission: Permission): string {
