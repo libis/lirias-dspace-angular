@@ -619,7 +619,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
   getTodayNextYear() {
     const date = new Date();
     return {
-      year: date.getFullYear(),
+      year: date.getFullYear() + 1,
       month: date.getMonth(),
       day: date.getDate()
     };
