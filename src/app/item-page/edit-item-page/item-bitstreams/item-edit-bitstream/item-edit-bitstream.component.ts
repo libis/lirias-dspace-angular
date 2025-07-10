@@ -13,7 +13,7 @@ import { getBitstreamDownloadRoute } from '../../../../app-routing-paths';
 import { Permission } from 'src/app/core/shared/permission.model';
 import { HttpClient } from '@angular/common/http';
 import { HALEndpointService } from 'src/app/core/shared/hal-endpoint.service';
-import { formatInTimeZone }  from 'date-fns-tz';
+import { format }  from 'date-fns-tz';
 
 @Component({
   selector: 'ds-item-edit-bitstream',
@@ -105,7 +105,7 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
       return '';
     }
     const date = new Date(permission.embargoEndDate.year, permission.embargoEndDate.month - 1, permission.embargoEndDate.day);
-    return ' ' + formatInTimeZone(date, 'UTC', 'yyyy-MM-dd');
+    return ' ' + format(date, 'yyyy-MM-dd');
   }
 
   /**
