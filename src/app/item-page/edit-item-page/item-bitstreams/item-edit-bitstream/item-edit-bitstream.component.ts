@@ -97,17 +97,14 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
   }
 
   getBitstreamPermission(bitstreamID: string): Observable<Permission> {
-    return this.httpClient.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID).pipe(map( (permission) => {
-      console.log(`table view, embargo end date: year -> ${permission.embargoEndDate?.year}, month -> ${permission.embargoEndDate?.month}, day -> ${permission.embargoEndDate?.day}`);
-      return permission;
-    }));
+    return this.httpClient.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID);
   }
 
   formatEmabargoEndDate(permission: Permission): string {
     if (permission.embargoEndDate === null || permission.embargoEndDate.year == null) {
       return '';
     }
-    const date = new Date(permission.embargoEndDate.year, permission.embargoEndDate.month, permission.embargoEndDate.day);
+    const date = new Date(permission.embargoEndDate.year, permission.embargoEndDate.month - 1, permission.embargoEndDate.day);
     return ' ' + formatInTimeZone(date, 'UTC', 'yyyy-MM-dd');
   }
 
