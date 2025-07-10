@@ -98,7 +98,7 @@ export class ItemEditBitstreamComponent implements OnChanges, OnInit {
 
   getBitstreamPermission(bitstreamID: string): Observable<Permission> {
     return this.httpClient.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID).pipe(map( (permission) => {
-      console.log(`getting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
+      console.log(`table view, embargo end date: year -> ${permission.embargoEndDate?.year}, month -> ${permission.embargoEndDate?.month}, day -> ${permission.embargoEndDate?.day}`);
       return permission;
     }));
   }

@@ -610,13 +610,13 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
   getBitstreamPermission(bitstreamID: string): Observable<Permission> {
     return this.http.get<Permission>(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID).pipe(map((permission) => {
-      console.log(`getting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
+      console.log(`getting permission, embargo end date: year -> ${permission.embargoEndDate?.year}, month -> ${permission.embargoEndDate?.month}, day -> ${permission.embargoEndDate?.day}`);
       return permission;
     }));
   }
 
   postBitstreamPermission(bitstreamID: string, permission: Permission): void {
-    console.log(`posting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
+    console.log(`posting permission, embargo end date: year -> ${permission.embargoEndDate?.year}, month -> ${permission.embargoEndDate?.month}, day -> ${permission.embargoEndDate?.day}`);
     this.http.post(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID, permission)
       .subscribe({
         next: response => console.log(response),
