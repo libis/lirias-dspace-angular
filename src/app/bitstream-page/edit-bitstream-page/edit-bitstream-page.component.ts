@@ -617,7 +617,11 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
 
   postBitstreamPermission(bitstreamID: string, permission: Permission): void {
     console.log(`posting embargo end date: year -> ${permission.embargoEndDate.year}, month -> ${permission.embargoEndDate.month}, day -> ${permission.embargoEndDate.day}`);
-    this.http.post(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID, permission);
+    this.http.post(this.halService.getRootHref() + '/kul/permissions/' + bitstreamID, permission)
+      .subscribe({
+        next: response => console.log(response),
+        error: err => console.error(err)
+      });
   }
 
   getTodayNextYear() {
