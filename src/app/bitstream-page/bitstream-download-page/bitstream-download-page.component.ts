@@ -109,7 +109,7 @@ export class BitstreamDownloadPageComponent implements OnInit {
     const errorUrl = `${window.location.origin}/500`;
 
     // Use Angular HttpClient so auth interceptors, cookies and CSRF/XSRF tokens are applied consistently.
-    this.http.get(fileLink, {
+  this.http.get(fileLink, {
       observe: 'response',
       responseType: 'blob',
       withCredentials: true
@@ -143,8 +143,45 @@ export class BitstreamDownloadPageComponent implements OnInit {
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 30_000);
 
-        // The network download has completed (blob received); safe to redirect now.
-        this.hardRedirectService.redirect(redirectUrl);
+        // The network download has completed (blob received). If a browser/system
+        // download dialog appears, many browsers blur the window and refocus when the
+        // dialog is closed. Use blur/focus as a generic signal of user interaction.
+        // If there's no blur shortly after the click, assume no dialog and redirect.
+        const noDialogFallbackMs = 1000;   // redirect if no blur occurs within 1s
+        const maxWaitMs = 120000;          // absolute cap to avoid waiting forever
+
+        let didBlur = false;
+        const onBlur = () => { didBlur = true; };
+        const onFocus = () => {
+          if (didBlur) {
+            cleanupAndRedirect();
+          }
+        };
+
+        const cleanup = () => {
+          window.removeEventListener('blur', onBlur);
+          window.removeEventListener('focus', onFocus);
+          clearTimeout(noDialogTimer);
+          clearTimeout(maxWaitTimer);
+        };
+
+        const cleanupAndRedirect = () => {
+          cleanup();
+          this.hardRedirectService.redirect(redirectUrl);
+        };
+
+        window.addEventListener('blur', onBlur);
+        window.addEventListener('focus', onFocus);
+
+        const noDialogTimer = setTimeout(() => {
+          if (!didBlur) {
+            cleanupAndRedirect();
+          }
+        }, noDialogFallbackMs);
+
+        const maxWaitTimer = setTimeout(() => {
+          cleanupAndRedirect();
+        }, maxWaitMs);
       },
       error: () => {
         // Simplified failure handling: redirect to error page on same origin
