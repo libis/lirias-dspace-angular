@@ -83,21 +83,13 @@ export class BitstreamDownloadPageComponent implements OnInit {
       })
     ).subscribe(([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
-        // Auto-submit a POST form to the static page, passing fileLink as a hidden field
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'https://lirias2test.libis.kuleuven.be/downloadthanks.html';
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'fileLink';
-        input.value = fileLink;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
+        // Use window.name to pass fileLink across origins, then navigate via GET
+        try { (window as any).name = fileLink; } catch (e) { /* noop */ }
+        this.hardRedirectService.redirect('/en/lirias/download-started');
       } else if (isAuthorized && !isLoggedIn) {
         this.hardRedirectService.redirect(bitstream._links.content.href);
       } else if (!isAuthorized && isLoggedIn) {
-        this.router.navigateByUrl(getForbiddenRoute(), {skipLocationChange: true});
+        void this.router.navigateByUrl(getForbiddenRoute(), {skipLocationChange: true});
       } else if (!isAuthorized && !isLoggedIn) {
         this.route.paramMap.subscribe((m) => {
           this.hardRedirectService.redirect(this.halService.getRootHref() + '/core/bitstreams/' + m.get('id') + '/content');
