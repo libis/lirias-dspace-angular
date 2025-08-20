@@ -83,7 +83,9 @@ export class BitstreamDownloadPageComponent implements OnInit {
       })
     ).subscribe(([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
-        this.hardRedirectService.redirect(fileLink);
+        //const redirectUrl = `https://research.kuleuven.be/en/lirias/download-started?fileLink=${encodeURIComponent(fileLink)}`;
+        const redirectUrl = `https://lirias2test.libis.kuleuven.be/downloadthanks.html?fileLink=${encodeURIComponent(fileLink)}`;
+        this.hardRedirectService.redirect(redirectUrl);
       } else if (isAuthorized && !isLoggedIn) {
         this.hardRedirectService.redirect(bitstream._links.content.href);
       } else if (!isAuthorized && isLoggedIn) {
