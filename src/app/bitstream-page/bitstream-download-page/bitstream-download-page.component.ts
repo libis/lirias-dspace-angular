@@ -89,8 +89,8 @@ export class BitstreamDownloadPageComponent implements OnInit {
       } else if (!isAuthorized && isLoggedIn) {
         this.router.navigateByUrl(getForbiddenRoute(), {skipLocationChange: true});
       } else if (!isAuthorized && !isLoggedIn) {
-        this.route.paramMap.subscribe((map) => {
-          this.hardRedirectService.redirect(this.halService.getRootHref() + "/core/bitstreams/" + map.get('id') + '/content');
+        this.route.paramMap.subscribe((m) => {
+          this.hardRedirectService.redirect(this.halService.getRootHref() + '/core/bitstreams/' + m.get('id') + '/content');
         });
       }
     });
