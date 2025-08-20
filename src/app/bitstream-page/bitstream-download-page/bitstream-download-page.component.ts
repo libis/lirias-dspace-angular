@@ -143,10 +143,45 @@ export class BitstreamDownloadPageComponent implements OnInit {
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 30_000);
 
-        // Always redirect after a short delay, regardless of cancel/save
-        setTimeout(() => {
+        // The network download has completed (blob received). If a browser/system
+        // download dialog appears, many browsers blur the window and refocus when the
+        // dialog is closed. Use blur/focus as a generic signal of user interaction.
+        // If there's no blur shortly after the click, assume no dialog and redirect.
+        const noDialogFallbackMs = 1000;   // redirect if no blur occurs within 1s
+        const maxWaitMs = 120000;          // absolute cap to avoid waiting forever
+
+        let didBlur = false;
+        const onBlur = () => { didBlur = true; };
+        const onFocus = () => {
+          if (didBlur) {
+            cleanupAndRedirect();
+          }
+        };
+
+        const cleanup = () => {
+          window.removeEventListener('blur', onBlur);
+          window.removeEventListener('focus', onFocus);
+          clearTimeout(noDialogTimer);
+          clearTimeout(maxWaitTimer);
+        };
+
+        const cleanupAndRedirect = () => {
+          cleanup();
           this.hardRedirectService.redirect(redirectUrl);
-        }, 2000);
+        };
+
+        window.addEventListener('blur', onBlur);
+        window.addEventListener('focus', onFocus);
+
+        const noDialogTimer = setTimeout(() => {
+          if (!didBlur) {
+            cleanupAndRedirect();
+          }
+        }, noDialogFallbackMs);
+
+        const maxWaitTimer = setTimeout(() => {
+          cleanupAndRedirect();
+        }, maxWaitMs);
       },
       error: () => {
         // Simplified failure handling: redirect to error page on same origin
