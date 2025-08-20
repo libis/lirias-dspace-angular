@@ -13,7 +13,6 @@ import { HardRedirectService } from '../../core/services/hard-redirect.service';
 import { getForbiddenRoute } from '../../app-routing-paths';
 import { RemoteData } from '../../core/data/remote-data';
 import { isPlatformServer, Location } from '@angular/common';
-import { HttpClient, HttpResponse } from '@angular/common/http';
 import { DSONameService } from '../../core/breadcrumbs/dso-name.service';
 import { SignpostingDataService } from '../../core/data/signposting-data.service';
 import { ServerResponseService } from '../../core/services/server-response.service';
@@ -44,7 +43,6 @@ export class BitstreamDownloadPageComponent implements OnInit {
     private signpostingDataService: SignpostingDataService,
     private responseService: ServerResponseService,
     private halService: HALEndpointService,
-  private http: HttpClient,
     @Inject(PLATFORM_ID) protected platformId: string
   ) {
     this.initPageLinks();
@@ -85,9 +83,13 @@ export class BitstreamDownloadPageComponent implements OnInit {
       })
     ).subscribe(([isAuthorized, isLoggedIn, bitstream, fileLink]: [boolean, boolean, Bitstream, string]) => {
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
-        // Prefer a fetch+blob download so we know when the network download finished,
-        // then trigger save and redirect. Fallback to iframe for browsers that can't.
-        this.downloadAndRedirect(fileLink);
+        const iframe = document.createElement('iframe');
+        iframe.src = fileLink;
+        document.body.appendChild(iframe);
+        // Delay slightly to ensure download starts before redirect
+        setTimeout(() => {
+          this.hardRedirectService.redirect('https://research.kuleuven.be/en/lirias/download-started');
+        }, 1000); // Adjust delay as needed
       } else if (isAuthorized && !isLoggedIn) {
         this.hardRedirectService.redirect(bitstream._links.content.href);
       } else if (!isAuthorized && isLoggedIn) {
@@ -96,55 +98,6 @@ export class BitstreamDownloadPageComponent implements OnInit {
         this.route.paramMap.subscribe((map) => {
           this.hardRedirectService.redirect(this.halService.getRootHref() + "/core/bitstreams/" + map.get('id') + '/content');
         });
-      }
-    });
-  }
-
-  /**
-   * Download a file via fetch so we can await completion, then trigger a save and redirect.
-   * Falls back to hidden iframe where fetch isn't possible or fails (e.g., CORS or very old Safari),
-   * and avoids redirecting immediately on Safari to prevent the download from being canceled.
-   */
-  private downloadAndRedirect(fileLink: string): void {
-    const redirectUrl = 'https://research.kuleuven.be/en/lirias/download-started';
-
-    // Use Angular HttpClient so auth interceptors, cookies and CSRF/XSRF tokens are applied consistently.
-    this.http.get(fileLink, {
-      observe: 'response',
-      responseType: 'blob',
-      withCredentials: true
-    }).pipe(take(1)).subscribe({
-      next: (resp: HttpResponse<Blob>) => {
-        // Extract filename from Content-Disposition
-        const disposition = resp.headers.get('content-disposition') || '';
-        let filename = 'download';
-        const fnameStar = disposition.match(/filename\*=(?:UTF-8''|)([^;\n]+)/i);
-        const fname = disposition.match(/filename=\"?([^\";\n]+)\"?/i);
-        if (fnameStar && fnameStar[1]) {
-          try { filename = decodeURIComponent(fnameStar[1]); } catch { filename = fnameStar[1]; }
-        } else if (fname && fname[1]) {
-          filename = fname[1];
-        }
-
-        const blob = resp.body as Blob;
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 30_000);
-
-        // The network download has completed (blob received); safe to redirect now.
-        this.hardRedirectService.redirect(redirectUrl);
-      },
-      error: () => {
-        // Generic fallback: navigate directly to the file URL so the browser manages the download.
-        // We skip the post-download redirect in fallback, prioritizing a successful download.
-        this.hardRedirectService.redirect(fileLink);
       }
     });
   }
