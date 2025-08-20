@@ -85,7 +85,7 @@ export class BitstreamDownloadPageComponent implements OnInit {
       if (isAuthorized && isLoggedIn && isNotEmpty(fileLink)) {
         // Use window.name to pass fileLink across origins, then navigate via GET
         try { (window as any).name = fileLink; } catch (e) { /* noop */ }
-        this.hardRedirectService.redirect('/en/lirias/download-started');
+        this.hardRedirectService.redirect('/downloadthanks.html');
       } else if (isAuthorized && !isLoggedIn) {
         this.hardRedirectService.redirect(bitstream._links.content.href);
       } else if (!isAuthorized && isLoggedIn) {
