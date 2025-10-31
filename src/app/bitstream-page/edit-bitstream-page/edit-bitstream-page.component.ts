@@ -620,7 +620,7 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
     const date = new Date();
     return {
       year: date.getFullYear() + 1,
-      month: date.getMonth(),
+      month: date.getMonth() + 1,
       day: date.getDate()
     };
   }
@@ -897,13 +897,11 @@ export class EditBitstreamPageComponent implements OnInit, OnDestroy {
       bitstream$ = observableOf(this.bitstream);
     }
     let newPermission: Permission = {
-      permission: this.permissionModel.value as string,
+      permission: updatedValues.permissionContainer.permission as string,
       embargoEndDate: null
     };
     if (newPermission.permission === 'EMBARGO') {
-
-      const value = this.embargoEndDateModel.value as ValueFromDatePicker;
-
+      const value = updatedValues.permissionContainer.embargoEndDate as ValueFromDatePicker;
       newPermission.embargoEndDate = {
         year: value.year,
         month: value.month,
